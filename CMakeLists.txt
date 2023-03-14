@@ -5,6 +5,10 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_subdirectory(Catch2 EXCLUDE_FROM_ALL)
 
-add_executable(Simd main.cpp SimdVec.h)
+add_executable(Tests Tests.cpp SimdVec.h)
 
-target_link_libraries(Simd PUBLIC Catch2::Catch2WithMain)
+target_link_libraries(Tests PUBLIC Catch2::Catch2WithMain)
+
+add_executable(Benchmarks Benchmarks.cpp SimdVec.h)
+
+target_link_libraries(Benchmarks PUBLIC Catch2::Catch2WithMain)

@@ -80,8 +80,8 @@ public:
         return SimdVec{_mm_div_ps(m, len)};
     }
 
-    // TODO: Figure out why this doesn't work
-    [[nodiscard]] SimdVec Normalize2() const {
+    // Maximum relative error: 1.5*2^-12 (about 0.0003662109375)
+    [[nodiscard]] SimdVec FastNormalize() const {
         __m128 lenSqr = _mm_dp_ps(m, m, 0xFF);
         __m128 revLen = _mm_rsqrt_ps(lenSqr);
         return SimdVec{_mm_mul_ps(m, revLen)};

@@ -1,3 +1,7 @@
+//
+// Created by andyroiiid on 3/14/2023.
+//
+
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_floating_point.hpp>
 #include <catch2/matchers/catch_matchers_templated.hpp>
@@ -12,43 +16,45 @@ std::ostream &operator<<(std::ostream &os, const SimdVec &v) {
 using Catch::Matchers::WithinRel;
 
 struct EqualsSimdVec : Catch::Matchers::MatcherGenericBase {
-    explicit EqualsSimdVec(const SimdVec &vec) : vec{vec} {}
+    explicit EqualsSimdVec(const SimdVec &vec, float epsilon = std::numeric_limits<float>::epsilon() * 100) : vec{vec}, epsilon{epsilon} {}
 
     bool match(const SimdVec &other) const {
-        return WithinRel(vec.X()).match(other.X()) &&
-               WithinRel(vec.Y()).match(other.Y()) &&
-               WithinRel(vec.Z()).match(other.Z()) &&
-               WithinRel(vec.W()).match(other.W());
+        return WithinRel(vec.X(), epsilon).match(other.X()) &&
+               WithinRel(vec.Y(), epsilon).match(other.Y()) &&
+               WithinRel(vec.Z(), epsilon).match(other.Z()) &&
+               WithinRel(vec.W(), epsilon).match(other.W());
     }
 
     std::string describe() const override {
         std::ostringstream ss;
-        ss << vec;
-        return "Equals: " + ss.str();
+        ss << "Equals: " << vec << " (Epsilon = " << epsilon << ")";
+        return ss.str();
     }
 
 private:
     const SimdVec &vec;
+    float epsilon;
 };
 
 struct DoesNotEqualSimdVec : Catch::Matchers::MatcherGenericBase {
-    explicit DoesNotEqualSimdVec(const SimdVec &vec) : vec{vec} {}
+    explicit DoesNotEqualSimdVec(const SimdVec &vec, float epsilon = std::numeric_limits<float>::epsilon() * 100) : vec{vec}, epsilon{epsilon} {}
 
     bool match(const SimdVec &other) const {
-        return !WithinRel(vec.X()).match(other.X()) ||
-               !WithinRel(vec.Y()).match(other.Y()) ||
-               !WithinRel(vec.Z()).match(other.Z()) ||
-               !WithinRel(vec.W()).match(other.W());
+        return !WithinRel(vec.X(), epsilon).match(other.X()) ||
+               !WithinRel(vec.Y(), epsilon).match(other.Y()) ||
+               !WithinRel(vec.Z(), epsilon).match(other.Z()) ||
+               !WithinRel(vec.W(), epsilon).match(other.W());
     }
 
     std::string describe() const override {
         std::ostringstream ss;
-        ss << vec;
-        return "Does not equal: " + ss.str();
+        ss << "Does not equal: " << vec << " (Epsilon = " << epsilon << ")";
+        return ss.str();
     }
 
 private:
     const SimdVec &vec;
+    float epsilon;
 };
 
 TEST_CASE("Construction") {
@@ -136,5 +142,5 @@ TEST_CASE("Geometric Functions") {
 
     const SimdVec aNormalized = SimdVec{0.18257418583505536f, 0.3651483716701107f, 0.5477225575051661f, 0.7302967433402214f};
     CHECK_THAT(a.Normalize(), EqualsSimdVec(aNormalized));
-    CHECK_THAT(a.Normalize2(), EqualsSimdVec(aNormalized));
+    CHECK_THAT(a.FastNormalize(), EqualsSimdVec(aNormalized, 0.0003662109375));
 }
