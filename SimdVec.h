@@ -71,17 +71,18 @@ public:
 
     // Geometric Functions
     [[nodiscard]] float Dot(const SimdVec &v) const {
-        return SimdVec{_mm_dp_ps(m, v.m, 0xFF)}.X();
+        return _mm_cvtss_f32(_mm_dp_ps(m, v.m, 0xFF));
     }
 
     [[nodiscard]] float Length() const {
-        return SimdVec{_mm_sqrt_ps(_mm_dp_ps(m, m, 0xFF))}.X();
+        __m128 lenSqr = _mm_dp_ps(m, m, 0xFF);
+        return _mm_cvtss_f32(_mm_sqrt_ps(lenSqr));
     }
 
     [[nodiscard]] float Distance(const SimdVec &v) const {
         __m128 delta = _mm_sub_ps(m, v.m);
         __m128 lenSqr = _mm_dp_ps(delta, delta, 0xFF);
-        return SimdVec{_mm_sqrt_ps(lenSqr)}.X();
+        return _mm_cvtss_f32(_mm_sqrt_ps(lenSqr));
     }
 
     [[nodiscard]] SimdVec Normalize() const {
