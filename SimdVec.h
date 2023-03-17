@@ -72,38 +72,38 @@ public:
     // Geometric Functions
 
     [[nodiscard]] float Dot(const SimdVec &v) const {
-        return _mm_cvtss_f32(_mm_dp_ps(m, v.m, 0b11111111));
+        return _mm_cvtss_f32(_mm_dp_ps(m, v.m, 0xFF));
     }
 
     [[nodiscard]] float Length() const {
-        __m128 lenSqr = _mm_dp_ps(m, m, 0b11111111);
+        __m128 lenSqr = _mm_dp_ps(m, m, 0xFF);
         return _mm_cvtss_f32(_mm_sqrt_ps(lenSqr));
     }
 
     [[nodiscard]] float Distance(const SimdVec &v) const {
         __m128 delta = _mm_sub_ps(m, v.m);
-        __m128 lenSqr = _mm_dp_ps(delta, delta, 0b11111111);
+        __m128 lenSqr = _mm_dp_ps(delta, delta, 0xFF);
         return _mm_cvtss_f32(_mm_sqrt_ps(lenSqr));
     }
 
     [[nodiscard]] SimdVec Normalize() const {
-        __m128 lenSqr = _mm_dp_ps(m, m, 0b11111111);
+        __m128 lenSqr = _mm_dp_ps(m, m, 0xFF);
         __m128 len = _mm_sqrt_ps(lenSqr);
         return SimdVec{_mm_div_ps(m, len)};
     }
 
     // Maximum relative error: 1.5*2^-12 (about 0.0003662109375)
     [[nodiscard]] SimdVec FastNormalize() const {
-        __m128 lenSqr = _mm_dp_ps(m, m, 0b11111111);
+        __m128 lenSqr = _mm_dp_ps(m, m, 0xFF);
         __m128 revLen = _mm_rsqrt_ps(lenSqr);
         return SimdVec{_mm_mul_ps(m, revLen)};
     }
 
     [[nodiscard]] SimdVec Cross(const SimdVec &v) const {
-        __m128 a2a3a1a4 = _mm_shuffle_ps(m, m, 0b11001001);
-        __m128 a3a1a2a4 = _mm_shuffle_ps(m, m, 0b11010010);
-        __m128 b2b3b1b4 = _mm_shuffle_ps(v.m, v.m, 0b11001001);
-        __m128 b3b1b2b4 = _mm_shuffle_ps(v.m, v.m, 0b11010010);
+        __m128 a2a3a1a4 = _mm_shuffle_ps(m, m, _MM_SHUFFLE(3, 0, 2, 1));
+        __m128 a3a1a2a4 = _mm_shuffle_ps(m, m, _MM_SHUFFLE(3, 1, 0, 2));
+        __m128 b2b3b1b4 = _mm_shuffle_ps(v.m, v.m, _MM_SHUFFLE(3, 0, 2, 1));
+        __m128 b3b1b2b4 = _mm_shuffle_ps(v.m, v.m, _MM_SHUFFLE(3, 1, 0, 2));
         return SimdVec{_mm_sub_ps(_mm_mul_ps(a2a3a1a4, b3b1b2b4), _mm_mul_ps(a3a1a2a4, b2b3b1b4))};
     }
 
