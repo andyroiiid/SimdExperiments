@@ -3,59 +3,8 @@
 //
 
 #include <catch2/catch_test_macros.hpp>
-#include <catch2/matchers/catch_matchers_floating_point.hpp>
-#include <catch2/matchers/catch_matchers_templated.hpp>
-#include <sstream>
 
-#include "SimdVec.h"
-
-std::ostream &operator<<(std::ostream &os, const SimdVec &v) {
-    return os << "{" << v.X() << ", " << v.Y() << ", " << v.Z() << ", " << v.W() << "}";
-}
-
-using Catch::Matchers::WithinRel;
-
-struct EqualsSimdVec : Catch::Matchers::MatcherGenericBase {
-    explicit EqualsSimdVec(const SimdVec &vec, float epsilon = std::numeric_limits<float>::epsilon() * 100) : vec{vec}, epsilon{epsilon} {}
-
-    bool match(const SimdVec &other) const {
-        return WithinRel(vec.X(), epsilon).match(other.X()) &&
-               WithinRel(vec.Y(), epsilon).match(other.Y()) &&
-               WithinRel(vec.Z(), epsilon).match(other.Z()) &&
-               WithinRel(vec.W(), epsilon).match(other.W());
-    }
-
-    std::string describe() const override {
-        std::ostringstream ss;
-        ss << "Equals: " << vec << " (Epsilon = " << epsilon << ")";
-        return ss.str();
-    }
-
-private:
-    const SimdVec &vec;
-    float epsilon;
-};
-
-struct DoesNotEqualSimdVec : Catch::Matchers::MatcherGenericBase {
-    explicit DoesNotEqualSimdVec(const SimdVec &vec, float epsilon = std::numeric_limits<float>::epsilon() * 100) : vec{vec}, epsilon{epsilon} {}
-
-    bool match(const SimdVec &other) const {
-        return !WithinRel(vec.X(), epsilon).match(other.X()) ||
-               !WithinRel(vec.Y(), epsilon).match(other.Y()) ||
-               !WithinRel(vec.Z(), epsilon).match(other.Z()) ||
-               !WithinRel(vec.W(), epsilon).match(other.W());
-    }
-
-    std::string describe() const override {
-        std::ostringstream ss;
-        ss << "Does not equal: " << vec << " (Epsilon = " << epsilon << ")";
-        return ss.str();
-    }
-
-private:
-    const SimdVec &vec;
-    float epsilon;
-};
+#include "TestUtils.h"
 
 TEST_CASE("Construction") {
     const SimdVec a;
