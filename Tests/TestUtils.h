@@ -7,9 +7,11 @@
 #include <catch2/matchers/catch_matchers_floating_point.hpp>
 #include <catch2/matchers/catch_matchers_templated.hpp>
 
-#include "SimdVec.h"
+#include "SimdMat.h"
 
 std::ostream &operator<<(std::ostream &os, const SimdVec &v);
+
+std::ostream &operator<<(std::ostream &os, const SimdMat &m);
 
 using Catch::Matchers::WithinRel;
 
@@ -34,5 +36,17 @@ struct DoesNotEqualSimdVec : Catch::Matchers::MatcherGenericBase {
 
 private:
     const SimdVec &vec;
+    float epsilon;
+};
+
+struct EqualsSimdMat : Catch::Matchers::MatcherGenericBase {
+    explicit EqualsSimdMat(const SimdMat &mat, float epsilon = std::numeric_limits<float>::epsilon() * 100);
+
+    bool match(const SimdMat &other) const;
+
+    std::string describe() const override;
+
+private:
+    const SimdMat &mat;
     float epsilon;
 };
