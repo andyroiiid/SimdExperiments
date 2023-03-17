@@ -121,6 +121,7 @@ TEST_CASE("Basic Operators") {
     const SimdVec a{1.0f, 2.0f, 3.0f, 4.0f};
     const SimdVec b{2.0f, 3.0f, 4.0f, 5.0f};
 
+    CHECK_THAT(-a, EqualsSimdVec({-1.0f, -2.0f, -3.0f, -4.0f}));
     CHECK_THAT(a + b, EqualsSimdVec({3.0f, 5.0f, 7.0f, 9.0f}));
     CHECK_THAT(a - b, EqualsSimdVec({-1.0f, -1.0f, -1.0f, -1.0f}));
     CHECK_THAT(a * b, EqualsSimdVec({2.0f, 6.0f, 12.0f, 20.0f}));
@@ -143,4 +144,21 @@ TEST_CASE("Geometric Functions") {
     const SimdVec aNormalized = SimdVec{0.18257418583505536f, 0.3651483716701107f, 0.5477225575051661f, 0.7302967433402214f};
     CHECK_THAT(a.Normalize(), EqualsSimdVec(aNormalized));
     CHECK_THAT(a.FastNormalize(), EqualsSimdVec(aNormalized, 0.0003662109375));
+
+    const SimdVec c{1.0f, 2.0f, 3.0f, 0.0f};
+    const SimdVec d{2.0f, 3.0f, 4.0f, 0.0f};
+    CHECK_THAT(c.Cross(d), EqualsSimdVec({-1.0f, 2.0f, -1.0f, 0.0f}));
+
+    const SimdVec i{1.0f, 0.0f, 0.0f, 0.0f};
+    const SimdVec j{0.0f, 1.0f, 0.0f, 0.0f};
+    const SimdVec k{0.0f, 0.0f, 1.0f, 0.0f};
+    CHECK_THAT(i.Cross(i), EqualsSimdVec({}));
+    CHECK_THAT(j.Cross(j), EqualsSimdVec({}));
+    CHECK_THAT(k.Cross(k), EqualsSimdVec({}));
+    CHECK_THAT(i.Cross(j), EqualsSimdVec(k));
+    CHECK_THAT(j.Cross(k), EqualsSimdVec(i));
+    CHECK_THAT(k.Cross(i), EqualsSimdVec(j));
+    CHECK_THAT(j.Cross(i), EqualsSimdVec(-k));
+    CHECK_THAT(k.Cross(j), EqualsSimdVec(-i));
+    CHECK_THAT(i.Cross(k), EqualsSimdVec(-j));
 }

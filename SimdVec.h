@@ -45,6 +45,14 @@ public:
 
     // Arithmetic Operators
 
+    const SimdVec &operator+() const {
+        return *this;
+    }
+
+    SimdVec operator-() const {
+        return SimdVec{_mm_sub_ps(_mm_setzero_ps(), m)};
+    }
+
     SimdVec operator+(const SimdVec &v) const {
         return SimdVec{_mm_add_ps(m, v.m)};
     }
@@ -71,7 +79,9 @@ public:
     }
 
     [[nodiscard]] float Distance(const SimdVec &v) const {
-        return (*this - v).Length();
+        __m128 delta = _mm_sub_ps(m, v.m);
+        __m128 lenSqr = _mm_dp_ps(delta, delta, 0xFF);
+        return SimdVec{_mm_sqrt_ps(lenSqr)}.X();
     }
 
     [[nodiscard]] SimdVec Normalize() const {
@@ -87,12 +97,12 @@ public:
         return SimdVec{_mm_mul_ps(m, revLen)};
     }
 
-private:
-    // 0xF: all components equal
-    // 0x0: all components not equal
-    // Other: mixed
-    [[nodiscard]] int Compare(const SimdVec &v) const {
-        return _mm_movemask_ps(_mm_cmpeq_ps(m, v.m));
+    [[nodiscard]] SimdVec Cross(const SimdVec &v) const {
+        __m128 a2a3a1a4 = _mm_shuffle_ps(m, m, 0xC9);
+        __m128 b3b1b2b4 = _mm_shuffle_ps(v.m, v.m, 0xD2);
+        __m128 a3a1a2a4 = _mm_shuffle_ps(m, m, 0xD2);
+        __m128 b2b3b1b4 = _mm_shuffle_ps(v.m, v.m, 0xC9);
+        return SimdVec{_mm_sub_ps(_mm_mul_ps(a2a3a1a4, b3b1b2b4), _mm_mul_ps(a3a1a2a4, b2b3b1b4))};
     }
 
     __m128 m;
