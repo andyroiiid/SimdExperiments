@@ -69,3 +69,41 @@ TEST_CASE("Operators") {
                                        314.0f, 356.0f, 398.0f, 440.0f,
                                        426.0f, 484.0f, 542.0f, 600.0f}));
 }
+
+TEST_CASE("Static Creates") {
+    {
+        const SimdVec v{1.0f, 2.0f, 3.0f, 1.0f};
+        const SimdMat m = SimdMat::Translate({4.0f, 5.0f, 6.0f, 1.0f});
+        CHECK_THAT(m * v, EqualsSimdVec({5.0f, 7.0f, 9.0f, 1.0f}));
+    }
+
+    {
+        const SimdVec v{1.0f, 2.0f, 3.0f, 1.0f};
+        const SimdMat m = SimdMat::Scale(4.0f);
+        CHECK_THAT(m * v, EqualsSimdVec({4.0f, 8.0f, 12.0f, 1.0f}));
+    }
+
+    {
+        const SimdVec v{1.0f, 2.0f, 3.0f, 1.0f};
+        const SimdMat m = SimdMat::Scale({4.0f, 5.0f, 6.0f, 1.0f});
+        CHECK_THAT(m * v, EqualsSimdVec({4.0f, 10.0f, 18.0f, 1.0f}));
+    }
+
+    {
+        const SimdVec v{1.0f, 2.0f, 3.0f, 1.0f};
+        const SimdMat m = SimdMat::RotateX(M_PI_2);
+        CHECK_THAT(m * v, EqualsSimdVec({1.0f, -3.0f, 2.0f, 1.0f}));
+    }
+
+    {
+        const SimdVec v{1.0f, 2.0f, 3.0f, 1.0f};
+        const SimdMat m = SimdMat::RotateY(M_PI_2);
+        CHECK_THAT(m * v, EqualsSimdVec({3.0f, 2.0f, -1.0f, 1.0f}));
+    }
+
+    {
+        const SimdVec v{1.0f, 2.0f, 3.0f, 1.0f};
+        const SimdMat m = SimdMat::RotateZ(M_PI_2);
+        CHECK_THAT(m * v, EqualsSimdVec({-2.0f, 1.0f, 3.0f, 1.0f}));
+    }
+}

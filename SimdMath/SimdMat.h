@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <cmath>
+
 #include "SimdVec.h"
 
 // c0: m00, m10, m20, m30
@@ -73,6 +75,54 @@ struct SimdMat {
     SimdVec c1;
     SimdVec c2;
     SimdVec c3;
+
+    static SimdMat Translate(const SimdVec &translation) {
+        return {{1.0f, 0.0f, 0.0f, 0.0f},
+                {0.0f, 1.0f, 0.0f, 0.0f},
+                {0.0f, 0.0f, 1.0f, 0.0f},
+                translation};
+    }
+
+    static SimdMat Scale(const float scale) {
+        return {{scale, 0.0f, 0.0f, 0.0f},
+                {0.0f, scale, 0.0f, 0.0f},
+                {0.0f, 0.0f, scale, 0.0f},
+                SimdVec{0.0f, 0.0f, 0.0f, 1.0f}};
+    }
+
+    static SimdMat Scale(const SimdVec &scale) {
+        return {{scale.X(), 0.0f, 0.0f, 0.0f},
+                {0.0f, scale.Y(), 0.0f, 0.0f},
+                {0.0f, 0.0f, scale.Z(), 0.0f},
+                SimdVec{0.0f, 0.0f, 0.0f, 1.0f}};
+    }
+
+    static SimdMat RotateX(const float theta) {
+        const float c = std::cos(theta);
+        const float s = std::sin(theta);
+        return {{1.0f, 0.0f, 0.0f, 0.0f},
+                {0.0f, c, s, 0.0f},
+                {0.0f, -s, c, 0.0f},
+                SimdVec{0.0f, 0.0f, 0.0f, 1.0f}};
+    }
+
+    static SimdMat RotateY(const float theta) {
+        const float c = std::cos(theta);
+        const float s = std::sin(theta);
+        return {{c, 0.0f, -s, 0.0f},
+                {0.0f, 1.0f, 0.0f, 0.0f},
+                {s, 0.0f, c, 0.0f},
+                SimdVec{0.0f, 0.0f, 0.0f, 1.0f}};
+    }
+
+    static SimdMat RotateZ(const float theta) {
+        const float c = std::cos(theta);
+        const float s = std::sin(theta);
+        return {{c, s, 0.0f, 0.0f},
+                {-s, c, 0.0f, 0.0f},
+                {0.0f, 0.0f, 1.0f, 0.0f},
+                SimdVec{0.0f, 0.0f, 0.0f, 1.0f}};
+    }
 };
 
 static_assert(sizeof(SimdMat) == 4 * sizeof(SimdVec));
