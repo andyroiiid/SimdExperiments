@@ -1,6 +1,6 @@
 add_library(TestUtils TestUtils.cpp TestUtils.h)
 
-target_link_libraries(TestUtils PUBLIC Catch2::Catch2WithMain SimdMath)
+target_link_libraries(TestUtils PUBLIC Catch2::Catch2WithMain SimdMath glm)
 
 macro(add_my_test test)
     add_executable(${test} ${test}.cpp)
@@ -8,4 +8,5 @@ macro(add_my_test test)
 endmacro()
 
 add_my_test(VectorTests)
+add_my_test(MatrixTests)
 add_my_test(Benchmarks)

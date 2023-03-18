@@ -7,6 +7,8 @@
 #include <smmintrin.h>
 #include <xmmintrin.h>
 
+struct SimdMat;
+
 // x: data[31:0], m128_f32[0]
 // y: data[63:32], m128_f32[1]
 // z: data[95:64], m128_f32[2]
@@ -63,6 +65,8 @@ struct SimdVec {
     SimdVec operator*(const SimdVec &v) const {
         return SimdVec{_mm_mul_ps(m, v.m)};
     }
+
+    SimdVec operator*(const SimdMat &mat) const;
 
     SimdVec operator/(const SimdVec &v) const {
         return SimdVec{_mm_div_ps(m, v.m)};

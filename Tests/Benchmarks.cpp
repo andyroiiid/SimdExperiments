@@ -4,8 +4,9 @@
 
 #include <catch2/benchmark/catch_benchmark.hpp>
 #include <catch2/catch_test_macros.hpp>
+#include <glm/mat4x4.hpp>
 
-#include "SimdVec.h"
+#include "SimdMat.h"
 
 struct Vec {
     float x;
@@ -58,6 +59,28 @@ TEST_CASE("Cross Product Benchmarks") {
 
     BENCHMARK("SIMD Cross Product") {
         volatile SimdVec result = simd.Cross(simdB);
+        (void) result;
+    };
+}
+
+TEST_CASE("Matrix Multiplication Benchmarks") {
+    const glm::mat4 plain{1.0f, 2.0f, 3.0f, 4.0f,
+                          5.0f, 6.0f, 7.0f, 8.0f,
+                          9.0f, 10.0f, 11.0f, 12.0f,
+                          13.0f, 14.0f, 15.0f, 16.0f};
+
+    BENCHMARK("Plain Matrix Multiplication") {
+        volatile glm::mat4 result = plain * plain;
+        (void) result;
+    };
+
+    const SimdMat simd{1.0f, 2.0f, 3.0f, 4.0f,
+                       5.0f, 6.0f, 7.0f, 8.0f,
+                       9.0f, 10.0f, 11.0f, 12.0f,
+                       13.0f, 14.0f, 15.0f, 16.0f};
+
+    BENCHMARK("SIMD Matrix Multiplication") {
+        volatile SimdMat result = simd * simd;
         (void) result;
     };
 }

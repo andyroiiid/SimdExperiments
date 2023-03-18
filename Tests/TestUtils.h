@@ -6,8 +6,10 @@
 
 #include <catch2/matchers/catch_matchers_floating_point.hpp>
 #include <catch2/matchers/catch_matchers_templated.hpp>
+#include <glm/mat4x4.hpp>
 
 #include "SimdMat.h"
+#include "SimdVec.h"
 
 std::ostream &operator<<(std::ostream &os, const SimdVec &v);
 
@@ -19,6 +21,8 @@ struct EqualsSimdVec : Catch::Matchers::MatcherGenericBase {
     explicit EqualsSimdVec(const SimdVec &vec, float epsilon = std::numeric_limits<float>::epsilon() * 100);
 
     bool match(const SimdVec &other) const;
+
+    bool match(const glm::vec4 &other) const;
 
     std::string describe() const override;
 
@@ -43,6 +47,8 @@ struct EqualsSimdMat : Catch::Matchers::MatcherGenericBase {
     explicit EqualsSimdMat(const SimdMat &mat, float epsilon = std::numeric_limits<float>::epsilon() * 100);
 
     bool match(const SimdMat &other) const;
+
+    bool match(const glm::mat4 &other) const;
 
     std::string describe() const override;
 
