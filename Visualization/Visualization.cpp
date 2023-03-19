@@ -36,7 +36,7 @@ layout (location = 0) in vec4 vNormal;
 layout (location = 0) out vec4 fColor;
 
 void main() {
-    fColor = vNormal;
+    fColor = vNormal * 0.5 + 0.5;
 }
 )GLSL";
 
@@ -51,15 +51,80 @@ struct Vertex {
 
 using Vertices = VertexBuffer<Vertex>;
 
+std::vector<Vertex> CreateBox(const SimdVec &min, const SimdVec &max) {
+    const SimdVec p000{_mm_blend_ps(min.m, max.m, 0b0000)};
+    const SimdVec p001{_mm_blend_ps(min.m, max.m, 0b0100)};
+    const SimdVec p010{_mm_blend_ps(min.m, max.m, 0b0010)};
+    const SimdVec p011{_mm_blend_ps(min.m, max.m, 0b0110)};
+    const SimdVec p100{_mm_blend_ps(min.m, max.m, 0b0001)};
+    const SimdVec p101{_mm_blend_ps(min.m, max.m, 0b0101)};
+    const SimdVec p110{_mm_blend_ps(min.m, max.m, 0b0011)};
+    const SimdVec p111{_mm_blend_ps(min.m, max.m, 0b0111)};
+
+    const SimdVec npx{1, 0, 0, 0};
+    const SimdVec nnx{-1, 0, 0, 0};
+    const SimdVec npy{0, 1, 0, 0};
+    const SimdVec nny{0, -1, 0, 0};
+    const SimdVec npz{0, 0, 1, 0};
+    const SimdVec nnz{0, 0, -1, 0};
+
+    std::vector<Vertex> vertices{
+            // +x
+            {p101, npx},
+            {p100, npx},
+            {p111, npx},
+            {p111, npx},
+            {p100, npx},
+            {p110, npx},
+            // -x
+            {p000, nnx},
+            {p001, nnx},
+            {p010, nnx},
+            {p010, nnx},
+            {p001, nnx},
+            {p011, nnx},
+            // posY
+            {p011, npy},
+            {p111, npy},
+            {p010, npy},
+            {p010, npy},
+            {p111, npy},
+            {p110, npy},
+            // -y
+            {p000, nny},
+            {p100, nny},
+            {p001, nny},
+            {p001, nny},
+            {p100, nny},
+            {p101, nny},
+            // +z
+            {p001, npz},
+            {p101, npz},
+            {p011, npz},
+            {p011, npz},
+            {p101, npz},
+            {p111, npz},
+            // -z
+            {p100, nnz},
+            {p000, nnz},
+            {p110, nnz},
+            {p110, nnz},
+            {p000, nnz},
+            {p010, nnz}};
+
+    return vertices;
+}
+
 class App {
 public:
     NO_MOVE_OR_COPY(App)
 
     App() {
-        std::vector<Vertex> vertices{{{-0.5f, -0.5f, 0.0f, 1.0f}, {1.0f, 0.0f, 0.0f, 0.0f}},
-                                     {{0.5f, -0.5f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.0f, 0.0f}},
-                                     {{0.0f, 0.5f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f, 0.0f}}};
+        std::vector<Vertex> vertices = CreateBox({-1.0f, -1.0f, -1.0f, 1.0f},
+                                                 {1.0f, 1.0f, 1.0f, 1.0f});
         m_vertices = Vertices(vertices.size(), vertices.data());
+
+        glEnable(GL_DEPTH_TEST);
     }
 
     ~App() = default;
@@ -91,7 +156,7 @@ private:
                                                  100.0f);
 
         glViewport(0, 0, width, height);
-        glClearColor(0.4f, 0.8f, 1.0f, 1.0f);
+        glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         m_shader.Use();
