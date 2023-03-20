@@ -3,7 +3,7 @@
 //
 
 #include <catch2/catch_test_macros.hpp>
-#include <glm/mat4x4.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "TestUtils.h"
 
@@ -105,5 +105,15 @@ TEST_CASE("Static Creates") {
         const SimdVec v{1.0f, 2.0f, 3.0f, 1.0f};
         const SimdMat m = SimdMat::RotateZ(M_PI_2);
         CHECK_THAT(m * v, EqualsSimdVec({-2.0f, 1.0f, 3.0f, 1.0f}));
+    }
+
+    {
+        const glm::mat4 m1 = glm::lookAt(glm::vec3{1.0f, 2.0f, 3.0f},
+                                         glm::vec3{0.0f, 0.0f, 0.0f},
+                                         glm::vec3{0.0f, 1.0f, 0.0f});
+        const SimdMat m2 = SimdMat::LookAt({1.0f, 2.0f, 3.0f, 1.0f},
+                                           {0.0f, 0.0f, 0.0f, 1.0f},
+                                           {0.0f, 1.0f, 0.0f, 0.0f});
+        CHECK_THAT(m1, EqualsSimdMat(m2));
     }
 }

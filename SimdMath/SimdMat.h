@@ -55,15 +55,15 @@ struct SimdMat {
         __m128 m1 = c1.m;
         __m128 m2 = c2.m;
         __m128 m3 = c3.m;
-        _MM_TRANSPOSE4_PS(m0, m1, m2, m3);
+        _MM_TRANSPOSE4_PS(m0, m1, m2, m3)
         return {m0, m1, m2, m3};
     }
 
     SimdVec operator*(const SimdVec &v) const {
-        SimdVec v0{_mm_shuffle_ps(v.m, v.m, _MM_SHUFFLE(0, 0, 0, 0))};
-        SimdVec v1{_mm_shuffle_ps(v.m, v.m, _MM_SHUFFLE(1, 1, 1, 1))};
-        SimdVec v2{_mm_shuffle_ps(v.m, v.m, _MM_SHUFFLE(2, 2, 2, 2))};
-        SimdVec v3{_mm_shuffle_ps(v.m, v.m, _MM_SHUFFLE(3, 3, 3, 3))};
+        const SimdVec v0{_mm_shuffle_ps(v.m, v.m, _MM_SHUFFLE(0, 0, 0, 0))};
+        const SimdVec v1{_mm_shuffle_ps(v.m, v.m, _MM_SHUFFLE(1, 1, 1, 1))};
+        const SimdVec v2{_mm_shuffle_ps(v.m, v.m, _MM_SHUFFLE(2, 2, 2, 2))};
+        const SimdVec v3{_mm_shuffle_ps(v.m, v.m, _MM_SHUFFLE(3, 3, 3, 3))};
         return c0 * v0 + c1 * v1 + c2 * v2 + c3 * v3;
     }
 
@@ -122,6 +122,18 @@ struct SimdMat {
                 {-s, c, 0.0f, 0.0f},
                 {0.0f, 0.0f, 1.0f, 0.0f},
                 SimdVec{0.0f, 0.0f, 0.0f, 1.0f}};
+    }
+
+    // eye: (x, y, z, 1)
+    // target: (x, y, z, 1)
+    // up: (x, y, z, 0)
+    static SimdMat LookAt(const SimdVec &eye, const SimdVec &target, const SimdVec &up) {
+        const SimdVec z = (eye - target).Normalize();
+        const SimdVec x = up.Cross(z).Normalize();
+        const SimdVec y = z.Cross(x);
+        SimdMat result = SimdMat{x, y, z, {}}.Transpose();
+        result.c3 = -SimdVec{x.Dot(eye), y.Dot(eye), z.Dot(eye), -1.0f};
+        return result;
     }
 };
 

@@ -4,7 +4,7 @@
 
 #include <catch2/benchmark/catch_benchmark.hpp>
 #include <catch2/catch_test_macros.hpp>
-#include <glm/mat4x4.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "SimdMat.h"
 
@@ -81,6 +81,22 @@ TEST_CASE("Matrix Multiplication Benchmarks") {
 
     BENCHMARK("SIMD Matrix Multiplication") {
         volatile SimdMat result = simd * simd;
+        (void) result;
+    };
+}
+
+TEST_CASE("LookAt Matrix Benchmarks") {
+    BENCHMARK("Plain LookAt") {
+        volatile glm::mat4 result = glm::lookAt(glm::vec3{1.0f, 2.0f, 3.0f},
+                                                glm::vec3{0.0f, 0.0f, 0.0f},
+                                                glm::vec3{0.0f, 1.0f, 0.0f});
+        (void) result;
+    };
+
+    BENCHMARK("SIMD LookAt") {
+        volatile SimdMat result = SimdMat::LookAt({1.0f, 2.0f, 3.0f, 1.0f},
+                                                  {0.0f, 0.0f, 0.0f, 1.0f},
+                                                  {0.0f, 1.0f, 0.0f, 0.0f});
         (void) result;
     };
 }

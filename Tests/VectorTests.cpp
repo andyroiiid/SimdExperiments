@@ -6,6 +6,8 @@
 
 #include "TestUtils.h"
 
+using Catch::Matchers::WithinRel;
+
 TEST_CASE("Construction") {
     const SimdVec a;
     const SimdVec b{42.0f};

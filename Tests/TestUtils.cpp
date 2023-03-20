@@ -22,10 +22,10 @@ EqualsSimdVec::EqualsSimdVec(const SimdVec &vec, float epsilon)
     : vec{vec}, epsilon{epsilon} {}
 
 bool EqualsSimdVec::match(const SimdVec &other) const {
-    return WithinRel(vec.X(), epsilon).match(other.X()) &&
-           WithinRel(vec.Y(), epsilon).match(other.Y()) &&
-           WithinRel(vec.Z(), epsilon).match(other.Z()) &&
-           WithinRel(vec.W(), epsilon).match(other.W());
+    return WithinAbs(vec.X(), epsilon).match(other.X()) &&
+           WithinAbs(vec.Y(), epsilon).match(other.Y()) &&
+           WithinAbs(vec.Z(), epsilon).match(other.Z()) &&
+           WithinAbs(vec.W(), epsilon).match(other.W());
 }
 
 std::string EqualsSimdVec::describe() const {
@@ -35,20 +35,20 @@ std::string EqualsSimdVec::describe() const {
 }
 
 bool EqualsSimdVec::match(const glm::vec4 &other) const {
-    return WithinRel(vec.X(), epsilon).match(other.x) &&
-           WithinRel(vec.Y(), epsilon).match(other.y) &&
-           WithinRel(vec.Z(), epsilon).match(other.z) &&
-           WithinRel(vec.W(), epsilon).match(other.w);
+    return WithinAbs(vec.X(), epsilon).match(other.x) &&
+           WithinAbs(vec.Y(), epsilon).match(other.y) &&
+           WithinAbs(vec.Z(), epsilon).match(other.z) &&
+           WithinAbs(vec.W(), epsilon).match(other.w);
 }
 
 DoesNotEqualSimdVec::DoesNotEqualSimdVec(const SimdVec &vec, float epsilon)
     : vec{vec}, epsilon{epsilon} {}
 
 bool DoesNotEqualSimdVec::match(const SimdVec &other) const {
-    return !WithinRel(vec.X(), epsilon).match(other.X()) ||
-           !WithinRel(vec.Y(), epsilon).match(other.Y()) ||
-           !WithinRel(vec.Z(), epsilon).match(other.Z()) ||
-           !WithinRel(vec.W(), epsilon).match(other.W());
+    return !WithinAbs(vec.X(), epsilon).match(other.X()) ||
+           !WithinAbs(vec.Y(), epsilon).match(other.Y()) ||
+           !WithinAbs(vec.Z(), epsilon).match(other.Z()) ||
+           !WithinAbs(vec.W(), epsilon).match(other.W());
 }
 
 std::string DoesNotEqualSimdVec::describe() const {
@@ -74,20 +74,20 @@ std::string EqualsSimdMat::describe() const {
 }
 
 bool EqualsSimdMat::match(const glm::mat4 &other) const {
-    return WithinRel(mat[0], epsilon).match(other[0][0]) &&
-           WithinRel(mat[1], epsilon).match(other[0][1]) &&
-           WithinRel(mat[2], epsilon).match(other[0][2]) &&
-           WithinRel(mat[3], epsilon).match(other[0][3]) &&
-           WithinRel(mat[4], epsilon).match(other[1][0]) &&
-           WithinRel(mat[5], epsilon).match(other[1][1]) &&
-           WithinRel(mat[6], epsilon).match(other[1][2]) &&
-           WithinRel(mat[7], epsilon).match(other[1][3]) &&
-           WithinRel(mat[8], epsilon).match(other[2][0]) &&
-           WithinRel(mat[9], epsilon).match(other[2][1]) &&
-           WithinRel(mat[10], epsilon).match(other[2][2]) &&
-           WithinRel(mat[11], epsilon).match(other[2][3]) &&
-           WithinRel(mat[12], epsilon).match(other[3][0]) &&
-           WithinRel(mat[13], epsilon).match(other[3][1]) &&
-           WithinRel(mat[14], epsilon).match(other[3][2]) &&
-           WithinRel(mat[15], epsilon).match(other[3][3]);
+    return WithinAbs(mat[0], epsilon).match(other[0][0]) &&
+           WithinAbs(mat[1], epsilon).match(other[0][1]) &&
+           WithinAbs(mat[2], epsilon).match(other[0][2]) &&
+           WithinAbs(mat[3], epsilon).match(other[0][3]) &&
+           WithinAbs(mat[4], epsilon).match(other[1][0]) &&
+           WithinAbs(mat[5], epsilon).match(other[1][1]) &&
+           WithinAbs(mat[6], epsilon).match(other[1][2]) &&
+           WithinAbs(mat[7], epsilon).match(other[1][3]) &&
+           WithinAbs(mat[8], epsilon).match(other[2][0]) &&
+           WithinAbs(mat[9], epsilon).match(other[2][1]) &&
+           WithinAbs(mat[10], epsilon).match(other[2][2]) &&
+           WithinAbs(mat[11], epsilon).match(other[2][3]) &&
+           WithinAbs(mat[12], epsilon).match(other[3][0]) &&
+           WithinAbs(mat[13], epsilon).match(other[3][1]) &&
+           WithinAbs(mat[14], epsilon).match(other[3][2]) &&
+           WithinAbs(mat[15], epsilon).match(other[3][3]);
 }

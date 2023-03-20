@@ -15,7 +15,7 @@ std::ostream &operator<<(std::ostream &os, const SimdVec &v);
 
 std::ostream &operator<<(std::ostream &os, const SimdMat &m);
 
-using Catch::Matchers::WithinRel;
+using Catch::Matchers::WithinAbs;
 
 struct EqualsSimdVec : Catch::Matchers::MatcherGenericBase {
     explicit EqualsSimdVec(const SimdVec &vec, float epsilon = std::numeric_limits<float>::epsilon() * 100);

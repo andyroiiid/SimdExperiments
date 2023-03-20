@@ -25,7 +25,7 @@ layout (location = 2) uniform mat4 uProjection;
 
 void main() {
     gl_Position = uProjection * uView * uModel * aPosition;
-    vNormal = aNormal;
+    vNormal = uModel * aNormal;
 }
 )GLSL";
 
@@ -146,9 +146,9 @@ private:
     void Frame(float DeltaTime, int width, int height) {
         m_model = SimdMat::RotateY(DeltaTime) * m_model;
 
-        glm::mat4 lookAt = glm::lookAt(glm::vec3{1.0f, 2.0f, 3.0f},
-                                       glm::vec3{0.0f, 0.0f, 0.0f},
-                                       glm::vec3{0.0f, 1.0f, 0.0f});
+        const SimdMat lookAt = SimdMat::LookAt({1.0f, 2.0f, 3.0f, 1.0f},
+                                               {0.0f, 0.0f, 0.0f, 1.0f},
+                                               {0.0f, 1.0f, 0.0f, 0.0f});
 
         glm::mat4 perspective = glm::perspective(glm::radians(60.0f),
                                                  static_cast<float>(width) / static_cast<float>(height),
