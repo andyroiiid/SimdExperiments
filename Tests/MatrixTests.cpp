@@ -116,4 +116,10 @@ TEST_CASE("Static Creates") {
                                            {0.0f, 1.0f, 0.0f, 0.0f});
         CHECK_THAT(m1, EqualsSimdMat(m2));
     }
+
+    {
+        const glm::mat4 m1 = glm::perspective(glm::radians(60.0f), 1.0f, 0.1f, 100.0f);
+        const SimdMat m2 = SimdMat::Perspective(M_PI / 3.0f, 1.0f, 0.1f, 100.0f);
+        CHECK_THAT(m, EqualsSimdMat(m2));
+    }
 }

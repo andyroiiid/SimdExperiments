@@ -135,6 +135,15 @@ struct SimdMat {
         result.c3 = -SimdVec{x.Dot(eye), y.Dot(eye), z.Dot(eye), -1.0f};
         return result;
     }
+
+    static SimdMat Perspective(const float fov, const float aspectRatio, const float near, const float far) {
+        const float halfTan = std::tan(fov * 0.5f);
+        SimdMat result{1.0f / (aspectRatio * halfTan), 0.0f, 0.0f, 0.0f,
+                       0.0f, 1.0f / halfTan, 0.0f, 0.0f,
+                       0.0f, 0.0f, (far + near) / (near - far), -1.0f,
+                       0.0f, 0.0f, 2.0f * far * near / (near - far), 0.0f};
+        return result;
+    }
 };
 
 static_assert(sizeof(SimdMat) == 4 * sizeof(SimdVec));

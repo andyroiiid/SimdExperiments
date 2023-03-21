@@ -6,7 +6,6 @@
 #include <SimdMat.h>
 #include <cstdio>
 #include <glad/gl.h>
-#include <glm/gtc/matrix_transform.hpp>
 #include <vector>
 
 #include "Shader.h"
@@ -150,10 +149,10 @@ private:
                                                {0.0f, 0.0f, 0.0f, 1.0f},
                                                {0.0f, 1.0f, 0.0f, 0.0f});
 
-        glm::mat4 perspective = glm::perspective(glm::radians(60.0f),
-                                                 static_cast<float>(width) / static_cast<float>(height),
-                                                 0.1f,
-                                                 100.0f);
+        const SimdMat perspective = SimdMat::Perspective(M_PI / 3.0f,
+                                                         static_cast<float>(width) / static_cast<float>(height),
+                                                         0.1f,
+                                                         100.0f);
 
         glViewport(0, 0, width, height);
         glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
