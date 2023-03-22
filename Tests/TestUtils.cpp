@@ -17,63 +17,66 @@ std::ostream &operator<<(std::ostream &os, const Mat4 &m) {
               << m.c2 << ",\n"
               << m.c3 << "\n}";
 }
+std::ostream &operator<<(std::ostream &os, const Quat &v) {
+    return os << "{" << v.X() << ", " << v.Y() << ", " << v.Z() << ", " << v.W() << "}";
+}
 
-EqualsSimdVec::EqualsSimdVec(const Vec4 &vec, float epsilon)
+EqualsVec4::EqualsVec4(const Vec4 &vec, float epsilon)
     : vec{vec}, epsilon{epsilon} {}
 
-bool EqualsSimdVec::match(const Vec4 &other) const {
+bool EqualsVec4::match(const Vec4 &other) const {
     return WithinAbs(vec.X(), epsilon).match(other.X()) &&
            WithinAbs(vec.Y(), epsilon).match(other.Y()) &&
            WithinAbs(vec.Z(), epsilon).match(other.Z()) &&
            WithinAbs(vec.W(), epsilon).match(other.W());
 }
 
-std::string EqualsSimdVec::describe() const {
+std::string EqualsVec4::describe() const {
     std::ostringstream ss;
     ss << "Equals: " << vec << " (Epsilon = " << epsilon << ")";
     return ss.str();
 }
 
-bool EqualsSimdVec::match(const glm::vec4 &other) const {
+bool EqualsVec4::match(const glm::vec4 &other) const {
     return WithinAbs(vec.X(), epsilon).match(other.x) &&
            WithinAbs(vec.Y(), epsilon).match(other.y) &&
            WithinAbs(vec.Z(), epsilon).match(other.z) &&
            WithinAbs(vec.W(), epsilon).match(other.w);
 }
 
-DoesNotEqualSimdVec::DoesNotEqualSimdVec(const Vec4 &vec, float epsilon)
+DoesNotEqualVec4::DoesNotEqualVec4(const Vec4 &vec, float epsilon)
     : vec{vec}, epsilon{epsilon} {}
 
-bool DoesNotEqualSimdVec::match(const Vec4 &other) const {
+bool DoesNotEqualVec4::match(const Vec4 &other) const {
     return !WithinAbs(vec.X(), epsilon).match(other.X()) ||
            !WithinAbs(vec.Y(), epsilon).match(other.Y()) ||
            !WithinAbs(vec.Z(), epsilon).match(other.Z()) ||
            !WithinAbs(vec.W(), epsilon).match(other.W());
 }
 
-std::string DoesNotEqualSimdVec::describe() const {
+std::string DoesNotEqualVec4::describe() const {
     std::ostringstream ss;
     ss << "Does not equal: " << vec << " (Epsilon = " << epsilon << ")";
     return ss.str();
 }
 
-EqualsSimdMat::EqualsSimdMat(const Mat4 &mat, float epsilon)
+EqualsMat4::EqualsMat4(const Mat4 &mat, float epsilon)
     : mat{mat}, epsilon{epsilon} {}
 
-bool EqualsSimdMat::match(const Mat4 &other) const {
-    return EqualsSimdVec(mat.c0, epsilon).match(other.c0) &&
-           EqualsSimdVec(mat.c1, epsilon).match(other.c1) &&
-           EqualsSimdVec(mat.c2, epsilon).match(other.c2) &&
-           EqualsSimdVec(mat.c3, epsilon).match(other.c3);
+bool EqualsMat4::match(const Mat4 &other) const {
+    return EqualsVec4(mat.c0, epsilon).match(other.c0) &&
+           EqualsVec4(mat.c1, epsilon).match(other.c1) &&
+           EqualsVec4(mat.c2, epsilon).match(other.c2) &&
+           EqualsVec4(mat.c3, epsilon).match(other.c3);
 }
 
-std::string EqualsSimdMat::describe() const {
+std::string EqualsMat4::describe() const {
     std::ostringstream ss;
     ss << "Equals: " << mat << " (Epsilon = " << epsilon << ")";
     return ss.str();
 }
 
-bool EqualsSimdMat::match(const glm::mat4 &other) const {
+bool EqualsMat4::match(const glm::mat4 &other) const {
     return WithinAbs(mat[0], epsilon).match(other[0][0]) &&
            WithinAbs(mat[1], epsilon).match(other[0][1]) &&
            WithinAbs(mat[2], epsilon).match(other[0][2]) &&
@@ -90,4 +93,20 @@ bool EqualsSimdMat::match(const glm::mat4 &other) const {
            WithinAbs(mat[13], epsilon).match(other[3][1]) &&
            WithinAbs(mat[14], epsilon).match(other[3][2]) &&
            WithinAbs(mat[15], epsilon).match(other[3][3]);
+}
+
+EqualsQuat::EqualsQuat(const Quat &quat, float epsilon)
+    : quat{quat}, epsilon{epsilon} {}
+
+bool EqualsQuat::match(const Quat &other) const {
+    return WithinAbs(quat.X(), epsilon).match(other.X()) &&
+           WithinAbs(quat.Y(), epsilon).match(other.Y()) &&
+           WithinAbs(quat.Z(), epsilon).match(other.Z()) &&
+           WithinAbs(quat.W(), epsilon).match(other.W());
+}
+
+std::string EqualsQuat::describe() const {
+    std::ostringstream ss;
+    ss << "Equals: " << quat << " (Epsilon = " << epsilon << ")";
+    return ss.str();
 }

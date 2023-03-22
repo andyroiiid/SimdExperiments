@@ -9,4 +9,5 @@ endmacro()
 
 add_my_test(VectorTests)
 add_my_test(MatrixTests)
+add_my_test(QuaternionTests)
 add_my_test(Benchmarks)

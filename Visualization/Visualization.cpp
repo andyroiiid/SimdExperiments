@@ -3,7 +3,7 @@
 //
 
 #include <GLFW/glfw3.h>
-#include <Mat4.h>
+#include <Quat.h>
 #include <cstdio>
 #include <glad/gl.h>
 #include <vector>
@@ -143,16 +143,16 @@ public:
 
 private:
     void Frame(float DeltaTime, int width, int height) {
-        m_model = Mat4::RotateY(DeltaTime) * m_model;
+        m_rotation = Quat{{1.0f, 1.0f, 1.0f, 0.0f}, DeltaTime} * m_rotation;
 
         const Mat4 lookAt = Mat4::LookAt({1.0f, 2.0f, 3.0f, 1.0f},
-                                               {0.0f, 0.0f, 0.0f, 1.0f},
-                                               {0.0f, 1.0f, 0.0f, 0.0f});
+                                         {0.0f, 0.0f, 0.0f, 1.0f},
+                                         {0.0f, 1.0f, 0.0f, 0.0f});
 
         const Mat4 perspective = Mat4::Perspective(M_PI / 3.0f,
-                                                         static_cast<float>(width) / static_cast<float>(height),
-                                                         0.1f,
-                                                         100.0f);
+                                                   static_cast<float>(width) / static_cast<float>(height),
+                                                   0.1f,
+                                                   100.0f);
 
         glViewport(0, 0, width, height);
         glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
@@ -160,7 +160,7 @@ private:
 
         m_shader.Use();
 
-        m_shader.SetUniform(m_modelLocation, m_model);
+        m_shader.SetUniform(m_modelLocation, m_rotation.ToMat4());
         m_shader.SetUniform(m_viewLocation, lookAt);
         m_shader.SetUniform(m_projectionLocation, perspective);
 
@@ -173,7 +173,7 @@ private:
     GLint m_viewLocation = m_shader.GetUniformLocation("uView");
     GLint m_projectionLocation = m_shader.GetUniformLocation("uProjection");
 
-    Mat4 m_model;
+    Quat m_rotation;
 };
 
 int main() {
