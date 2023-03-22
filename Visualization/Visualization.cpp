@@ -3,7 +3,7 @@
 //
 
 #include <GLFW/glfw3.h>
-#include <SimdMat.h>
+#include <Mat4.h>
 #include <cstdio>
 #include <glad/gl.h>
 #include <vector>
@@ -40,8 +40,8 @@ void main() {
 )GLSL";
 
 struct Vertex {
-    SimdVec position;
-    SimdVec normal;
+    Vec4 position;
+    Vec4 normal;
     static void SetupVertexArray(GLuint vao) {
         SetupVertexArrayFloatsAttrib(vao, 0, 0, 3, offsetof(Vertex, position));
         SetupVertexArrayFloatsAttrib(vao, 1, 0, 3, offsetof(Vertex, normal));
@@ -50,22 +50,22 @@ struct Vertex {
 
 using Vertices = VertexBuffer<Vertex>;
 
-std::vector<Vertex> CreateBox(const SimdVec &min, const SimdVec &max) {
-    const SimdVec p000{_mm_blend_ps(min.m, max.m, 0b0000)};
-    const SimdVec p001{_mm_blend_ps(min.m, max.m, 0b0100)};
-    const SimdVec p010{_mm_blend_ps(min.m, max.m, 0b0010)};
-    const SimdVec p011{_mm_blend_ps(min.m, max.m, 0b0110)};
-    const SimdVec p100{_mm_blend_ps(min.m, max.m, 0b0001)};
-    const SimdVec p101{_mm_blend_ps(min.m, max.m, 0b0101)};
-    const SimdVec p110{_mm_blend_ps(min.m, max.m, 0b0011)};
-    const SimdVec p111{_mm_blend_ps(min.m, max.m, 0b0111)};
+std::vector<Vertex> CreateBox(const Vec4 &min, const Vec4 &max) {
+    const Vec4 p000{_mm_blend_ps(min.m, max.m, 0b0000)};
+    const Vec4 p001{_mm_blend_ps(min.m, max.m, 0b0100)};
+    const Vec4 p010{_mm_blend_ps(min.m, max.m, 0b0010)};
+    const Vec4 p011{_mm_blend_ps(min.m, max.m, 0b0110)};
+    const Vec4 p100{_mm_blend_ps(min.m, max.m, 0b0001)};
+    const Vec4 p101{_mm_blend_ps(min.m, max.m, 0b0101)};
+    const Vec4 p110{_mm_blend_ps(min.m, max.m, 0b0011)};
+    const Vec4 p111{_mm_blend_ps(min.m, max.m, 0b0111)};
 
-    const SimdVec npx{1, 0, 0, 0};
-    const SimdVec nnx{-1, 0, 0, 0};
-    const SimdVec npy{0, 1, 0, 0};
-    const SimdVec nny{0, -1, 0, 0};
-    const SimdVec npz{0, 0, 1, 0};
-    const SimdVec nnz{0, 0, -1, 0};
+    const Vec4 npx{1, 0, 0, 0};
+    const Vec4 nnx{-1, 0, 0, 0};
+    const Vec4 npy{0, 1, 0, 0};
+    const Vec4 nny{0, -1, 0, 0};
+    const Vec4 npz{0, 0, 1, 0};
+    const Vec4 nnz{0, 0, -1, 0};
 
     std::vector<Vertex> vertices{
             // +x
@@ -143,13 +143,13 @@ public:
 
 private:
     void Frame(float DeltaTime, int width, int height) {
-        m_model = SimdMat::RotateY(DeltaTime) * m_model;
+        m_model = Mat4::RotateY(DeltaTime) * m_model;
 
-        const SimdMat lookAt = SimdMat::LookAt({1.0f, 2.0f, 3.0f, 1.0f},
+        const Mat4 lookAt = Mat4::LookAt({1.0f, 2.0f, 3.0f, 1.0f},
                                                {0.0f, 0.0f, 0.0f, 1.0f},
                                                {0.0f, 1.0f, 0.0f, 0.0f});
 
-        const SimdMat perspective = SimdMat::Perspective(M_PI / 3.0f,
+        const Mat4 perspective = Mat4::Perspective(M_PI / 3.0f,
                                                          static_cast<float>(width) / static_cast<float>(height),
                                                          0.1f,
                                                          100.0f);
@@ -173,7 +173,7 @@ private:
     GLint m_viewLocation = m_shader.GetUniformLocation("uView");
     GLint m_projectionLocation = m_shader.GetUniformLocation("uProjection");
 
-    SimdMat m_model;
+    Mat4 m_model;
 };
 
 int main() {

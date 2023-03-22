@@ -6,7 +6,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "SimdMat.h"
+#include "Mat4.h"
 
 struct Vec {
     float x;
@@ -108,7 +108,7 @@ TEST_CASE("Perspective Matrix Benchmarks") {
     };
 
     BENCHMARK("SIMD Perspective") {
-        volatile SimdMat result = SimdMat::Perspective(M_PI / 3.0f, 1.0f, 0.1f, 100.0f);
+        volatile Mat4 result = Mat4::Perspective(M_PI / 3.0f, 1.0f, 0.1f, 100.0f);
         (void) result;
     };
 }

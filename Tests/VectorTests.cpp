@@ -9,9 +9,9 @@
 using Catch::Matchers::WithinRel;
 
 TEST_CASE("Construction") {
-    const SimdVec a;
-    const SimdVec b{42.0f};
-    const SimdVec c{1.0f, -2.0f, 3.14f, 4.0f};
+    const Vec4 a;
+    const Vec4 b{42.0f};
+    const Vec4 c{1.0f, -2.0f, 3.14f, 4.0f};
 
     CHECK_THAT(a, EqualsSimdVec({0.0f, 0.0f, 0.0f, 0.0f}));
     CHECK_THAT(b, EqualsSimdVec({42.0f, 42.0f, 42.0f, 42.0f}));
@@ -19,7 +19,7 @@ TEST_CASE("Construction") {
 }
 
 TEST_CASE("Accessor") {
-    SimdVec a;
+    Vec4 a;
 
     CHECK_THAT(a.Components()[0], WithinRel(0.0f));
     CHECK_THAT(a.Components()[1], WithinRel(0.0f));
@@ -43,7 +43,7 @@ TEST_CASE("Accessor") {
 }
 
 TEST_CASE("Const Accessors") {
-    const SimdVec a{1.0f, 2.0f, 3.0f, 4.0f};
+    const Vec4 a{1.0f, 2.0f, 3.0f, 4.0f};
 
     CHECK_THAT(a.Components()[0], WithinRel(1.0f));
     CHECK_THAT(a.Components()[1], WithinRel(2.0f));
@@ -62,15 +62,15 @@ TEST_CASE("Const Accessors") {
 }
 
 TEST_CASE("Comparators") {
-    const SimdVec a{1.0f, -2.0f, 3.14f, 4.0f};
+    const Vec4 a{1.0f, -2.0f, 3.14f, 4.0f};
 
     CHECK_THAT(a, EqualsSimdVec({1.0f, -2.0f, 3.14f, 4.0f}));
     CHECK_THAT(a, DoesNotEqualSimdVec({0.0f, -2.0f, 3.14f, 4.0f}));
 }
 
 TEST_CASE("Basic Operators") {
-    const SimdVec a{1.0f, 2.0f, 3.0f, 4.0f};
-    const SimdVec b{2.0f, 3.0f, 4.0f, 5.0f};
+    const Vec4 a{1.0f, 2.0f, 3.0f, 4.0f};
+    const Vec4 b{2.0f, 3.0f, 4.0f, 5.0f};
 
     CHECK_THAT(-a, EqualsSimdVec({-1.0f, -2.0f, -3.0f, -4.0f}));
     CHECK_THAT(a + b, EqualsSimdVec({3.0f, 5.0f, 7.0f, 9.0f}));
@@ -80,8 +80,8 @@ TEST_CASE("Basic Operators") {
 }
 
 TEST_CASE("Geometric Functions") {
-    const SimdVec a{1.0f, 2.0f, 3.0f, 4.0f};
-    const SimdVec b{2.0f, 3.0f, 4.0f, 5.0f};
+    const Vec4 a{1.0f, 2.0f, 3.0f, 4.0f};
+    const Vec4 b{2.0f, 3.0f, 4.0f, 5.0f};
 
     CHECK_THAT(a.Dot(b), WithinRel(40.0f));
     CHECK_THAT(b.Dot(a), WithinRel(40.0f));
@@ -92,17 +92,17 @@ TEST_CASE("Geometric Functions") {
     CHECK_THAT(a.Distance(b), WithinRel(2.0f));
     CHECK_THAT(b.Distance(a), WithinRel(2.0f));
 
-    const SimdVec aNormalized = SimdVec{0.18257418583505536f, 0.3651483716701107f, 0.5477225575051661f, 0.7302967433402214f};
+    const Vec4 aNormalized = Vec4{0.18257418583505536f, 0.3651483716701107f, 0.5477225575051661f, 0.7302967433402214f};
     CHECK_THAT(a.Normalize(), EqualsSimdVec(aNormalized));
     CHECK_THAT(a.FastNormalize(), EqualsSimdVec(aNormalized, 0.0003662109375));
 
-    const SimdVec c{1.0f, 2.0f, 3.0f, 0.0f};
-    const SimdVec d{2.0f, 3.0f, 4.0f, 0.0f};
+    const Vec4 c{1.0f, 2.0f, 3.0f, 0.0f};
+    const Vec4 d{2.0f, 3.0f, 4.0f, 0.0f};
     CHECK_THAT(c.Cross(d), EqualsSimdVec({-1.0f, 2.0f, -1.0f, 0.0f}));
 
-    const SimdVec i{1.0f, 0.0f, 0.0f, 0.0f};
-    const SimdVec j{0.0f, 1.0f, 0.0f, 0.0f};
-    const SimdVec k{0.0f, 0.0f, 1.0f, 0.0f};
+    const Vec4 i{1.0f, 0.0f, 0.0f, 0.0f};
+    const Vec4 j{0.0f, 1.0f, 0.0f, 0.0f};
+    const Vec4 k{0.0f, 0.0f, 1.0f, 0.0f};
     CHECK_THAT(i.Cross(i), EqualsSimdVec({}));
     CHECK_THAT(j.Cross(j), EqualsSimdVec({}));
     CHECK_THAT(k.Cross(k), EqualsSimdVec({}));

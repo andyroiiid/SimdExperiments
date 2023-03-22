@@ -76,6 +76,6 @@ void Shader::SetUniform(const GLint location, const glm::mat4 &m) {
     glProgramUniformMatrix4fv(m_program, location, 1, GL_FALSE, glm::value_ptr(m));
 }
 
-void Shader::SetUniform(GLint location, const SimdMat &m) {
+void Shader::SetUniform(GLint location, const Mat4 &m) {
     glProgramUniformMatrix4fv(m_program, location, 1, GL_FALSE, m.Components());
 }

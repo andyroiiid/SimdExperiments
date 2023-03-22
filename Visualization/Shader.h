@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include <SimdMat.h>
+#include <Mat4.h>
 #include <glad/gl.h>
 #include <glm/mat4x4.hpp>
 
@@ -22,7 +22,7 @@ public:
 
     void SetUniform(GLint location, const glm::mat4 &m);
 
-    void SetUniform(GLint location, const SimdMat &m);
+    void SetUniform(GLint location, const Mat4 &m);
 
 private:
     Movable<GLuint> m_program;

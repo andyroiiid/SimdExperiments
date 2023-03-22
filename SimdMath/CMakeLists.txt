@@ -1,4 +1,4 @@
-add_library(SimdMath INTERFACE SimdVec.h SimdMat.h)
+add_library(SimdMath INTERFACE Vec4.h Mat4.h)
 
 target_compile_definitions(SimdMath INTERFACE _USE_MATH_DEFINES)
 

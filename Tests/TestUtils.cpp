@@ -6,11 +6,11 @@
 
 #include <sstream>
 
-std::ostream &operator<<(std::ostream &os, const SimdVec &v) {
+std::ostream &operator<<(std::ostream &os, const Vec4 &v) {
     return os << "{" << v.X() << ", " << v.Y() << ", " << v.Z() << ", " << v.W() << "}";
 }
 
-std::ostream &operator<<(std::ostream &os, const SimdMat &m) {
+std::ostream &operator<<(std::ostream &os, const Mat4 &m) {
     return os << "{\n"
               << m.c0 << ",\n"
               << m.c1 << ",\n"
@@ -18,10 +18,10 @@ std::ostream &operator<<(std::ostream &os, const SimdMat &m) {
               << m.c3 << "\n}";
 }
 
-EqualsSimdVec::EqualsSimdVec(const SimdVec &vec, float epsilon)
+EqualsSimdVec::EqualsSimdVec(const Vec4 &vec, float epsilon)
     : vec{vec}, epsilon{epsilon} {}
 
-bool EqualsSimdVec::match(const SimdVec &other) const {
+bool EqualsSimdVec::match(const Vec4 &other) const {
     return WithinAbs(vec.X(), epsilon).match(other.X()) &&
            WithinAbs(vec.Y(), epsilon).match(other.Y()) &&
            WithinAbs(vec.Z(), epsilon).match(other.Z()) &&
@@ -41,10 +41,10 @@ bool EqualsSimdVec::match(const glm::vec4 &other) const {
            WithinAbs(vec.W(), epsilon).match(other.w);
 }
 
-DoesNotEqualSimdVec::DoesNotEqualSimdVec(const SimdVec &vec, float epsilon)
+DoesNotEqualSimdVec::DoesNotEqualSimdVec(const Vec4 &vec, float epsilon)
     : vec{vec}, epsilon{epsilon} {}
 
-bool DoesNotEqualSimdVec::match(const SimdVec &other) const {
+bool DoesNotEqualSimdVec::match(const Vec4 &other) const {
     return !WithinAbs(vec.X(), epsilon).match(other.X()) ||
            !WithinAbs(vec.Y(), epsilon).match(other.Y()) ||
            !WithinAbs(vec.Z(), epsilon).match(other.Z()) ||
@@ -57,10 +57,10 @@ std::string DoesNotEqualSimdVec::describe() const {
     return ss.str();
 }
 
-EqualsSimdMat::EqualsSimdMat(const SimdMat &mat, float epsilon)
+EqualsSimdMat::EqualsSimdMat(const Mat4 &mat, float epsilon)
     : mat{mat}, epsilon{epsilon} {}
 
-bool EqualsSimdMat::match(const SimdMat &other) const {
+bool EqualsSimdMat::match(const Mat4 &other) const {
     return EqualsSimdVec(mat.c0, epsilon).match(other.c0) &&
            EqualsSimdVec(mat.c1, epsilon).match(other.c1) &&
            EqualsSimdVec(mat.c2, epsilon).match(other.c2) &&
