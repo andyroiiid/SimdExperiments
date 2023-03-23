@@ -59,18 +59,24 @@ struct Quat {
     }
 
     [[nodiscard]] Quat operator*(const Quat &q) const {
-        const float x1 = m.m128_f32[0];
-        const float y1 = m.m128_f32[1];
-        const float z1 = m.m128_f32[2];
-        const float w1 = m.m128_f32[3];
-        const float x2 = q.m.m128_f32[0];
-        const float y2 = q.m.m128_f32[1];
-        const float z2 = q.m.m128_f32[2];
-        const float w2 = q.m.m128_f32[3];
-        return {w1 * x2 + x1 * w2 + y1 * z2 - z1 * y2,
-                w1 * y2 - x1 * z2 + y1 * w2 + z1 * x2,
-                w1 * z2 + x1 * y2 - y1 * x2 + z1 * w2,
-                w1 * w2 - x1 * x2 - y1 * y2 - z1 * z2};
+        __m128 p = _mm_set_ps1(1.0f);
+        __m128 n = _mm_set_ps1(-1.0f);
+
+        __m128 fx = _mm_mul_ps(_mm_blend_ps(p, n, 0b1010), _mm_shuffle_ps(q.m, q.m, _MM_SHUFFLE(0, 1, 2, 3)));
+        __m128 fy = _mm_mul_ps(_mm_blend_ps(p, n, 0b1100), _mm_shuffle_ps(q.m, q.m, _MM_SHUFFLE(1, 0, 3, 2)));
+        __m128 fz = _mm_mul_ps(_mm_blend_ps(p, n, 0b1001), _mm_shuffle_ps(q.m, q.m, _MM_SHUFFLE(2, 3, 0, 1)));
+
+        __m128 x = _mm_shuffle_ps(m, m, _MM_SHUFFLE(0, 0, 0, 0));
+        __m128 y = _mm_shuffle_ps(m, m, _MM_SHUFFLE(1, 1, 1, 1));
+        __m128 z = _mm_shuffle_ps(m, m, _MM_SHUFFLE(2, 2, 2, 2));
+        __m128 w = _mm_shuffle_ps(m, m, _MM_SHUFFLE(3, 3, 3, 3));
+
+        __m128 px = _mm_mul_ps(x, fx);
+        __m128 py = _mm_mul_ps(y, fy);
+        __m128 pz = _mm_mul_ps(z, fz);
+        __m128 pw = _mm_mul_ps(w, q.m);
+
+        return Quat{_mm_add_ps(_mm_add_ps(px, py), _mm_add_ps(pz, pw))};
     }
 
     [[nodiscard]] Mat4 ToMat4() const {
