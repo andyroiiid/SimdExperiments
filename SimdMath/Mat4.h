@@ -76,74 +76,24 @@ struct Mat4 {
     Vec4 c2;
     Vec4 c3;
 
-    static Mat4 Translate(const Vec4 &translation) {
-        return {{1.0f, 0.0f, 0.0f, 0.0f},
-                {0.0f, 1.0f, 0.0f, 0.0f},
-                {0.0f, 0.0f, 1.0f, 0.0f},
-                translation};
-    }
+    static Mat4 Translate(const Vec4 &translation);
 
-    static Mat4 Scale(const float scale) {
-        return {{scale, 0.0f, 0.0f, 0.0f},
-                {0.0f, scale, 0.0f, 0.0f},
-                {0.0f, 0.0f, scale, 0.0f},
-                Vec4{0.0f, 0.0f, 0.0f, 1.0f}};
-    }
+    static Mat4 Scale(float scale);
 
-    static Mat4 Scale(const Vec4 &scale) {
-        return {{scale.X(), 0.0f, 0.0f, 0.0f},
-                {0.0f, scale.Y(), 0.0f, 0.0f},
-                {0.0f, 0.0f, scale.Z(), 0.0f},
-                Vec4{0.0f, 0.0f, 0.0f, 1.0f}};
-    }
+    static Mat4 Scale(const Vec4 &scale);
 
-    static Mat4 RotateX(const float theta) {
-        const float c = std::cos(theta);
-        const float s = std::sin(theta);
-        return {{1.0f, 0.0f, 0.0f, 0.0f},
-                {0.0f, c, s, 0.0f},
-                {0.0f, -s, c, 0.0f},
-                Vec4{0.0f, 0.0f, 0.0f, 1.0f}};
-    }
+    static Mat4 RotateX(float theta);
 
-    static Mat4 RotateY(const float theta) {
-        const float c = std::cos(theta);
-        const float s = std::sin(theta);
-        return {{c, 0.0f, -s, 0.0f},
-                {0.0f, 1.0f, 0.0f, 0.0f},
-                {s, 0.0f, c, 0.0f},
-                Vec4{0.0f, 0.0f, 0.0f, 1.0f}};
-    }
+    static Mat4 RotateY(float theta);
 
-    static Mat4 RotateZ(const float theta) {
-        const float c = std::cos(theta);
-        const float s = std::sin(theta);
-        return {{c, s, 0.0f, 0.0f},
-                {-s, c, 0.0f, 0.0f},
-                {0.0f, 0.0f, 1.0f, 0.0f},
-                Vec4{0.0f, 0.0f, 0.0f, 1.0f}};
-    }
+    static Mat4 RotateZ(float theta);
 
     // eye: (x, y, z, 1)
     // target: (x, y, z, 1)
     // up: (x, y, z, 0)
-    static Mat4 LookAt(const Vec4 &eye, const Vec4 &target, const Vec4 &up) {
-        const Vec4 z = (eye - target).Normalize();
-        const Vec4 x = up.Cross(z).Normalize();
-        const Vec4 y = z.Cross(x);
-        Mat4 result = Mat4{x, y, z, {}}.Transpose();
-        result.c3 = -Vec4{x.Dot(eye), y.Dot(eye), z.Dot(eye), -1.0f};
-        return result;
-    }
+    static Mat4 LookAt(const Vec4 &eye, const Vec4 &target, const Vec4 &up);
 
-    static Mat4 Perspective(const float fov, const float aspectRatio, const float near, const float far) {
-        const float halfTan = std::tan(fov * 0.5f);
-        Mat4 result{1.0f / (aspectRatio * halfTan), 0.0f, 0.0f, 0.0f,
-                    0.0f, 1.0f / halfTan, 0.0f, 0.0f,
-                    0.0f, 0.0f, (far + near) / (near - far), -1.0f,
-                    0.0f, 0.0f, 2.0f * far * near / (near - far), 0.0f};
-        return result;
-    }
+    static Mat4 Perspective(float fov, float aspectRatio, float near, float far);
 };
 
 static_assert(sizeof(Mat4) == 4 * sizeof(Vec4));
@@ -156,4 +106,70 @@ inline Vec4 Vec4::operator*(const Mat4 &mat) const {
     __m128 r01 = _mm_blend_ps(dp0, dp1, 0b0010);
     __m128 r23 = _mm_blend_ps(dp2, dp3, 0b1000);
     return Vec4(_mm_blend_ps(r01, r23, 0b1100));
+}
+
+inline Mat4 Mat4::Translate(const Vec4 &translation) {
+    return {{1.0f, 0.0f, 0.0f, 0.0f},
+            {0.0f, 1.0f, 0.0f, 0.0f},
+            {0.0f, 0.0f, 1.0f, 0.0f},
+            translation};
+}
+
+inline Mat4 Mat4::Scale(const float scale) {
+    return {{scale, 0.0f, 0.0f, 0.0f},
+            {0.0f, scale, 0.0f, 0.0f},
+            {0.0f, 0.0f, scale, 0.0f},
+            Vec4{0.0f, 0.0f, 0.0f, 1.0f}};
+}
+
+inline Mat4 Mat4::Scale(const Vec4 &scale) {
+    return {{scale.X(), 0.0f, 0.0f, 0.0f},
+            {0.0f, scale.Y(), 0.0f, 0.0f},
+            {0.0f, 0.0f, scale.Z(), 0.0f},
+            Vec4{0.0f, 0.0f, 0.0f, 1.0f}};
+}
+
+inline Mat4 Mat4::RotateX(const float theta) {
+    const float c = std::cos(theta);
+    const float s = std::sin(theta);
+    return {{1.0f, 0.0f, 0.0f, 0.0f},
+            {0.0f, c, s, 0.0f},
+            {0.0f, -s, c, 0.0f},
+            Vec4{0.0f, 0.0f, 0.0f, 1.0f}};
+}
+
+inline Mat4 Mat4::RotateY(const float theta) {
+    const float c = std::cos(theta);
+    const float s = std::sin(theta);
+    return {{c, 0.0f, -s, 0.0f},
+            {0.0f, 1.0f, 0.0f, 0.0f},
+            {s, 0.0f, c, 0.0f},
+            Vec4{0.0f, 0.0f, 0.0f, 1.0f}};
+}
+
+inline Mat4 Mat4::RotateZ(const float theta) {
+    const float c = std::cos(theta);
+    const float s = std::sin(theta);
+    return {{c, s, 0.0f, 0.0f},
+            {-s, c, 0.0f, 0.0f},
+            {0.0f, 0.0f, 1.0f, 0.0f},
+            Vec4{0.0f, 0.0f, 0.0f, 1.0f}};
+}
+
+inline Mat4 Mat4::LookAt(const Vec4 &eye, const Vec4 &target, const Vec4 &up) {
+    const Vec4 z = (eye - target).Normalize();
+    const Vec4 x = up.Cross(z).Normalize();
+    const Vec4 y = z.Cross(x);
+    Mat4 result = Mat4{x, y, z, {}}.Transpose();
+    result.c3 = -Vec4{x.Dot(eye), y.Dot(eye), z.Dot(eye), -1.0f};
+    return result;
+}
+
+inline Mat4 Mat4::Perspective(const float fov, const float aspectRatio, const float near, const float far) {
+    const float halfTan = std::tan(fov * 0.5f);
+    Mat4 result{1.0f / (aspectRatio * halfTan), 0.0f, 0.0f, 0.0f,
+                0.0f, 1.0f / halfTan, 0.0f, 0.0f,
+                0.0f, 0.0f, (far + near) / (near - far), -1.0f,
+                0.0f, 0.0f, 2.0f * far * near / (near - far), 0.0f};
+    return result;
 }
