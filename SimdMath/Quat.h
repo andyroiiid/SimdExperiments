@@ -5,6 +5,7 @@
 #pragma once
 
 #include <cmath>
+#include <immintrin.h>
 
 #include "Mat4.h"
 
@@ -13,7 +14,7 @@
 // z: data[95:64], m128_f32[2]
 // w: data[127:96], m128_f32[3]
 //
-// Requires SSE4.1
+// Requires AVX
 struct Quat {
     // Constructors
 
@@ -80,23 +81,44 @@ struct Quat {
     }
 
     [[nodiscard]] Mat4 ToMat4() const {
-        const float x = m.m128_f32[0];
-        const float y = m.m128_f32[1];
-        const float z = m.m128_f32[2];
-        const float w = m.m128_f32[3];
-        const float x2 = x * x;
-        const float y2 = y * y;
-        const float z2 = z * z;
-        const float xy = x * y;
-        const float yz = y * z;
-        const float xz = x * z;
-        const float wx = w * x;
-        const float wy = w * y;
-        const float wz = w * z;
-        return {1 - 2 * y2 - 2 * z2, 2 * xy - 2 * wz, 2 * xz + 2 * wy, 0,
-                2 * xy + 2 * wz, 1 - 2 * x2 - 2 * z2, 2 * yz - 2 * wx, 0,
-                2 * xz - 2 * wy, 2 * yz + 2 * wx, 1 - 2 * x2 - 2 * y2, 0,
-                0, 0, 0, 1};
+        __m128 c0;
+        {
+            __m128 p1 = _mm_set_ps(0.0f, 0.0f, 0.0f, 1.0f);
+            __m128 p2 = _mm_set_ps(0.0f, 2.0f, 2.0f, -2.0f);
+            __m128 p3 = _mm_shuffle_ps(m, m, _MM_SHUFFLE(3, 2, 0, 1));
+            __m128 p4 = _mm_shuffle_ps(m, m, _MM_SHUFFLE(3, 0, 1, 1));
+            __m128 p5 = _mm_set_ps(0.0f, 2.0f, -2.0f, -2.0f);
+            __m128 p6 = _mm_shuffle_ps(m, m, _MM_SHUFFLE(3, 3, 3, 2));
+            __m128 p7 = _mm_shuffle_ps(m, m, _MM_SHUFFLE(3, 1, 2, 2));
+            c0 = _mm_fmadd_ps(p2, _mm_mul_ps(p3, p4), _mm_fmadd_ps(p5, _mm_mul_ps(p6, p7), p1));
+        }
+
+        __m128 c1;
+        {
+            __m128 p1 = _mm_set_ps(0.0f, 0.0f, 1.0f, 0.0f);
+            __m128 p2 = _mm_set_ps(0.0f, 2.0f, -2.0f, 2.0f);
+            __m128 p3 = _mm_shuffle_ps(m, m, _MM_SHUFFLE(3, 1, 0, 0));
+            __m128 p4 = _mm_shuffle_ps(m, m, _MM_SHUFFLE(3, 2, 0, 1));
+            __m128 p5 = _mm_set_ps(0.0f, -2.0f, -2.0f, 2.0f);
+            __m128 p6 = _mm_shuffle_ps(m, m, _MM_SHUFFLE(3, 3, 2, 3));
+            __m128 p7 = _mm_shuffle_ps(m, m, _MM_SHUFFLE(3, 0, 2, 2));
+            c1 = _mm_fmadd_ps(p2, _mm_mul_ps(p3, p4), _mm_fmadd_ps(p5, _mm_mul_ps(p6, p7), p1));
+        }
+
+        __m128 c2;
+        {
+            __m128 p1 = _mm_set_ps(0.0f, 1.0f, 0.0f, 0.0f);
+            __m128 p2 = _mm_set_ps(0.0f, -2.0f, 2.0f, 2.0f);
+            __m128 p3 = _mm_shuffle_ps(m, m, _MM_SHUFFLE(3, 0, 1, 2));
+            __m128 p4 = _mm_shuffle_ps(m, m, _MM_SHUFFLE(3, 0, 2, 0));
+            __m128 p5 = _mm_set_ps(0.0f, -2.0f, 2.0f, -2.0f);
+            __m128 p6 = _mm_shuffle_ps(m, m, _MM_SHUFFLE(3, 1, 3, 3));
+            __m128 p7 = _mm_shuffle_ps(m, m, _MM_SHUFFLE(3, 1, 0, 1));
+            c2 = _mm_fmadd_ps(p2, _mm_mul_ps(p3, p4), _mm_fmadd_ps(p5, _mm_mul_ps(p6, p7), p1));
+        }
+
+        __m128 c3 = _mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f);
+        return {c0, c1, c2, c3};
     }
 
     __m128 m{};

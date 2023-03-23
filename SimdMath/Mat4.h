@@ -30,9 +30,9 @@ struct Mat4 {
         : c0{c0}, c1{c1}, c2{c2}, c3{c3} {}
 
     Mat4(float m00, float m10, float m20, float m30,
-            float m01, float m11, float m21, float m31,
-            float m02, float m12, float m22, float m32,
-            float m03, float m13, float m23, float m33)
+         float m01, float m11, float m21, float m31,
+         float m02, float m12, float m22, float m32,
+         float m03, float m13, float m23, float m33)
         : c0{m00, m10, m20, m30},
           c1{m01, m11, m21, m31},
           c2{m02, m12, m22, m32},
@@ -139,9 +139,9 @@ struct Mat4 {
     static Mat4 Perspective(const float fov, const float aspectRatio, const float near, const float far) {
         const float halfTan = std::tan(fov * 0.5f);
         Mat4 result{1.0f / (aspectRatio * halfTan), 0.0f, 0.0f, 0.0f,
-                       0.0f, 1.0f / halfTan, 0.0f, 0.0f,
-                       0.0f, 0.0f, (far + near) / (near - far), -1.0f,
-                       0.0f, 0.0f, 2.0f * far * near / (near - far), 0.0f};
+                    0.0f, 1.0f / halfTan, 0.0f, 0.0f,
+                    0.0f, 0.0f, (far + near) / (near - far), -1.0f,
+                    0.0f, 0.0f, 2.0f * far * near / (near - far), 0.0f};
         return result;
     }
 };

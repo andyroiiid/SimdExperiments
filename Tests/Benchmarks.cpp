@@ -130,6 +130,22 @@ struct alignas(16) PlainQuat {
                 w1 * w2 - x1 * x2 - y1 * y2 - z1 * z2};
     }
 
+    [[nodiscard]] Mat4 ToMat4() const {
+        const float x2 = x * x;
+        const float y2 = y * y;
+        const float z2 = z * z;
+        const float xy = x * y;
+        const float yz = y * z;
+        const float xz = x * z;
+        const float wx = w * x;
+        const float wy = w * y;
+        const float wz = w * z;
+        return {1 - 2 * y2 - 2 * z2, 2 * xy - 2 * wz, 2 * xz + 2 * wy, 0,
+                2 * xy + 2 * wz, 1 - 2 * x2 - 2 * z2, 2 * yz - 2 * wx, 0,
+                2 * xz - 2 * wy, 2 * yz + 2 * wx, 1 - 2 * x2 - 2 * y2, 0,
+                0, 0, 0, 1};
+    }
+
     float x;
     float y;
     float z;
@@ -144,6 +160,18 @@ TEST_CASE("Quaternion Hamilton Product Benchmarks") {
 
     BENCHMARK("SIMD Quat Hamilton Product") {
         volatile Quat result = Quat{1.0f, 0.0f, 0.0f, 0.0f} * Quat{0.0f, 0.0f, 0.0f, 1.0f};
+        (void) result;
+    };
+}
+
+TEST_CASE("Quaternion To Matrix Benchmarks") {
+    BENCHMARK("Plain Quat To Matrix") {
+        volatile Mat4 result = PlainQuat{1.0f, 0.0f, 0.0f, 0.0f}.ToMat4();
+        (void) result;
+    };
+
+    BENCHMARK("SIMD Quat To Matrix") {
+        volatile Mat4 result = Quat{1.0f, 0.0f, 0.0f, 0.0f}.ToMat4();
         (void) result;
     };
 }
