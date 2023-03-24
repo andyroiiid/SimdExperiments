@@ -15,7 +15,7 @@ struct Mat4;
 // w: data[127:96], m128_f32[3]
 //
 // Requires SSE4.1
-struct Vec4 {
+struct alignas(16) Vec4 {
     // Constructors
 
     Vec4() : Vec4(_mm_setzero_ps()) {}

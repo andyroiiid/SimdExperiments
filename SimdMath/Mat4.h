@@ -14,7 +14,7 @@
 // c3: m03, m13, m23, m33
 //
 // Column-major
-struct Mat4 {
+struct alignas(16) Mat4 {
     // Constructors
 
     Mat4()
@@ -55,7 +55,7 @@ struct Mat4 {
         __m128 m1 = c1.m;
         __m128 m2 = c2.m;
         __m128 m3 = c3.m;
-        _MM_TRANSPOSE4_PS(m0, m1, m2, m3)
+        _MM_TRANSPOSE4_PS(m0, m1, m2, m3);
         return {m0, m1, m2, m3};
     }
 

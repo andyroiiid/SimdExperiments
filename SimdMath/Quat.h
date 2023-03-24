@@ -15,7 +15,7 @@
 // w: data[127:96], m128_f32[3]
 //
 // Requires AVX
-struct Quat {
+struct alignas(16) Quat {
     // Constructors
 
     Quat() : Quat(0.0f, 0.0f, 0.0f, 1.0f) {}
