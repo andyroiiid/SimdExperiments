@@ -22,32 +22,32 @@ TEST_CASE("Construction") {
 TEST_CASE("Accessor") {
     Quat a{0.0f, 0.0f, 0.0f, 0.0f};
 
-    CHECK_THAT(a.Components()[0], WithinRel(0.0f));
-    CHECK_THAT(a.Components()[1], WithinRel(0.0f));
-    CHECK_THAT(a.Components()[2], WithinRel(0.0f));
-    CHECK_THAT(a.Components()[3], WithinRel(0.0f));
+    CHECK_THAT(a.e[0], WithinRel(0.0f));
+    CHECK_THAT(a.e[1], WithinRel(0.0f));
+    CHECK_THAT(a.e[2], WithinRel(0.0f));
+    CHECK_THAT(a.e[3], WithinRel(0.0f));
 
     CHECK_THAT(a[0], WithinRel(0.0f));
     CHECK_THAT(a[1], WithinRel(0.0f));
     CHECK_THAT(a[2], WithinRel(0.0f));
     CHECK_THAT(a[3], WithinRel(0.0f));
 
-    CHECK_THAT(a.X(), WithinRel(0.0f));
-    CHECK_THAT(a.Y(), WithinRel(0.0f));
-    CHECK_THAT(a.Z(), WithinRel(0.0f));
-    CHECK_THAT(a.W(), WithinRel(0.0f));
+    CHECK_THAT(a.x, WithinRel(0.0f));
+    CHECK_THAT(a.y, WithinRel(0.0f));
+    CHECK_THAT(a.z, WithinRel(0.0f));
+    CHECK_THAT(a.w, WithinRel(0.0f));
 
-    a.X() = 1.0f;
+    a.x = 1.0f;
 
-    CHECK_THAT(a.Components()[0], WithinRel(1.0f));
-    CHECK_THAT(a.X(), WithinRel(1.0f));
+    CHECK_THAT(a.e[0], WithinRel(1.0f));
+    CHECK_THAT(a.x, WithinRel(1.0f));
 }
 
 Mat4 ToMat4Reference(const Quat &q) {
-    const float x = q.m.m128_f32[0];
-    const float y = q.m.m128_f32[1];
-    const float z = q.m.m128_f32[2];
-    const float w = q.m.m128_f32[3];
+    const float x = q.x;
+    const float y = q.y;
+    const float z = q.z;
+    const float w = q.w;
     const float x2 = x * x;
     const float y2 = y * y;
     const float z2 = z * z;

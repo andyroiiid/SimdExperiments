@@ -7,7 +7,7 @@
 #include <smmintrin.h>
 #include <xmmintrin.h>
 
-struct Mat4;
+union Mat4;
 
 // x: data[31:0], m128_f32[0]
 // y: data[63:32], m128_f32[1]
@@ -15,7 +15,7 @@ struct Mat4;
 // w: data[127:96], m128_f32[3]
 //
 // Requires SSE4.1
-struct alignas(16) Vec4 {
+union alignas(16) Vec4 {
     // Constructors
 
     Vec4() : Vec4(_mm_setzero_ps()) {}
@@ -28,21 +28,11 @@ struct alignas(16) Vec4 {
 
     // Accessors
 
-    float *Components() { return reinterpret_cast<float *>(this); }
-    float &operator[](size_t i) { return Components()[i]; }
-    float &X() { return Components()[0]; }
-    float &Y() { return Components()[1]; }
-    float &Z() { return Components()[2]; }
-    float &W() { return Components()[3]; }
+    float &operator[](size_t i) { return e[i]; }
 
     // Const Accessors
 
-    [[nodiscard]] const float *Components() const { return reinterpret_cast<const float *>(this); }
-    [[nodiscard]] const float &operator[](size_t i) const { return Components()[i]; }
-    [[nodiscard]] const float &X() const { return Components()[0]; }
-    [[nodiscard]] const float &Y() const { return Components()[1]; }
-    [[nodiscard]] const float &Z() const { return Components()[2]; }
-    [[nodiscard]] const float &W() const { return Components()[3]; }
+    [[nodiscard]] const float &operator[](size_t i) const { return e[i]; }
 
     // Arithmetic Operators
 
@@ -110,7 +100,14 @@ struct alignas(16) Vec4 {
         return Vec4{_mm_sub_ps(_mm_mul_ps(a2a3a1a4, b3b1b2b4), _mm_mul_ps(a3a1a2a4, b2b3b1b4))};
     }
 
-    __m128 m;
+    __m128 m{};
+    struct {
+        float x;
+        float y;
+        float z;
+        float w;
+    };
+    float e[4];
 };
 
 static_assert(sizeof(Vec4) == sizeof(__m128));

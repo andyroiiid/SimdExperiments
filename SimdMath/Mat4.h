@@ -14,7 +14,7 @@
 // c3: m03, m13, m23, m33
 //
 // Column-major
-struct alignas(16) Mat4 {
+union alignas(16) Mat4 {
     // Constructors
 
     Mat4()
@@ -40,13 +40,11 @@ struct alignas(16) Mat4 {
 
     // Accessors
 
-    float *Components() { return reinterpret_cast<float *>(this); }
-    float &operator[](size_t i) { return Components()[i]; }
+    float &operator[](size_t i) { return e[i]; }
 
     // Const Accessors
 
-    [[nodiscard]] const float *Components() const { return reinterpret_cast<const float *>(this); }
-    [[nodiscard]] const float &operator[](size_t i) const { return Components()[i]; }
+    [[nodiscard]] const float &operator[](size_t i) const { return e[i]; }
 
     // Operators
 
@@ -71,10 +69,13 @@ struct alignas(16) Mat4 {
         return {operator*(m.c0), operator*(m.c1), operator*(m.c2), operator*(m.c3)};
     }
 
-    Vec4 c0;
-    Vec4 c1;
-    Vec4 c2;
-    Vec4 c3;
+    struct {
+        Vec4 c0;
+        Vec4 c1;
+        Vec4 c2;
+        Vec4 c3;
+    };
+    float e[16];
 
     static Mat4 Translate(const Vec4 &translation);
 
@@ -123,9 +124,9 @@ inline Mat4 Mat4::Scale(const float scale) {
 }
 
 inline Mat4 Mat4::Scale(const Vec4 &scale) {
-    return {{scale.X(), 0.0f, 0.0f, 0.0f},
-            {0.0f, scale.Y(), 0.0f, 0.0f},
-            {0.0f, 0.0f, scale.Z(), 0.0f},
+    return {{scale.x, 0.0f, 0.0f, 0.0f},
+            {0.0f, scale.y, 0.0f, 0.0f},
+            {0.0f, 0.0f, scale.z, 0.0f},
             Vec4{0.0f, 0.0f, 0.0f, 1.0f}};
 }
 

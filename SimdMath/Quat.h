@@ -15,7 +15,7 @@
 // w: data[127:96], m128_f32[3]
 //
 // Requires AVX
-struct alignas(16) Quat {
+union alignas(16) Quat {
     // Constructors
 
     Quat() : Quat(0.0f, 0.0f, 0.0f, 1.0f) {}
@@ -33,21 +33,11 @@ struct alignas(16) Quat {
 
     // Accessors
 
-    float *Components() { return reinterpret_cast<float *>(this); }
-    float &operator[](size_t i) { return Components()[i]; }
-    float &X() { return Components()[0]; }
-    float &Y() { return Components()[1]; }
-    float &Z() { return Components()[2]; }
-    float &W() { return Components()[3]; }
+    float &operator[](size_t i) { return e[i]; }
 
     // Const Accessors
 
-    [[nodiscard]] const float *Components() const { return reinterpret_cast<const float *>(this); }
-    [[nodiscard]] const float &operator[](size_t i) const { return Components()[i]; }
-    [[nodiscard]] const float &X() const { return Components()[0]; }
-    [[nodiscard]] const float &Y() const { return Components()[1]; }
-    [[nodiscard]] const float &Z() const { return Components()[2]; }
-    [[nodiscard]] const float &W() const { return Components()[3]; }
+    [[nodiscard]] const float &operator[](size_t i) const { return e[i]; }
 
     // Operators
 
@@ -122,6 +112,13 @@ struct alignas(16) Quat {
     }
 
     __m128 m{};
+    struct {
+        float x;
+        float y;
+        float z;
+        float w;
+    };
+    float e[4];
 };
 
 static_assert(sizeof(Quat) == sizeof(__m128));

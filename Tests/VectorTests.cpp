@@ -21,44 +21,44 @@ TEST_CASE("Construction") {
 TEST_CASE("Accessor") {
     Vec4 a;
 
-    CHECK_THAT(a.Components()[0], WithinRel(0.0f));
-    CHECK_THAT(a.Components()[1], WithinRel(0.0f));
-    CHECK_THAT(a.Components()[2], WithinRel(0.0f));
-    CHECK_THAT(a.Components()[3], WithinRel(0.0f));
+    CHECK_THAT(a.e[0], WithinRel(0.0f));
+    CHECK_THAT(a.e[1], WithinRel(0.0f));
+    CHECK_THAT(a.e[2], WithinRel(0.0f));
+    CHECK_THAT(a.e[3], WithinRel(0.0f));
 
     CHECK_THAT(a[0], WithinRel(0.0f));
     CHECK_THAT(a[1], WithinRel(0.0f));
     CHECK_THAT(a[2], WithinRel(0.0f));
     CHECK_THAT(a[3], WithinRel(0.0f));
 
-    CHECK_THAT(a.X(), WithinRel(0.0f));
-    CHECK_THAT(a.Y(), WithinRel(0.0f));
-    CHECK_THAT(a.Z(), WithinRel(0.0f));
-    CHECK_THAT(a.W(), WithinRel(0.0f));
+    CHECK_THAT(a.x, WithinRel(0.0f));
+    CHECK_THAT(a.y, WithinRel(0.0f));
+    CHECK_THAT(a.z, WithinRel(0.0f));
+    CHECK_THAT(a.w, WithinRel(0.0f));
 
-    a.X() = 1.0f;
+    a.x = 1.0f;
 
-    CHECK_THAT(a.Components()[0], WithinRel(1.0f));
-    CHECK_THAT(a.X(), WithinRel(1.0f));
+    CHECK_THAT(a.e[0], WithinRel(1.0f));
+    CHECK_THAT(a.x, WithinRel(1.0f));
 }
 
 TEST_CASE("Const Accessors") {
     const Vec4 a{1.0f, 2.0f, 3.0f, 4.0f};
 
-    CHECK_THAT(a.Components()[0], WithinRel(1.0f));
-    CHECK_THAT(a.Components()[1], WithinRel(2.0f));
-    CHECK_THAT(a.Components()[2], WithinRel(3.0f));
-    CHECK_THAT(a.Components()[3], WithinRel(4.0f));
+    CHECK_THAT(a.e[0], WithinRel(1.0f));
+    CHECK_THAT(a.e[1], WithinRel(2.0f));
+    CHECK_THAT(a.e[2], WithinRel(3.0f));
+    CHECK_THAT(a.e[3], WithinRel(4.0f));
 
     CHECK_THAT(a[0], WithinRel(1.0f));
     CHECK_THAT(a[1], WithinRel(2.0f));
     CHECK_THAT(a[2], WithinRel(3.0f));
     CHECK_THAT(a[3], WithinRel(4.0f));
 
-    CHECK_THAT(a.X(), WithinRel(1.0f));
-    CHECK_THAT(a.Y(), WithinRel(2.0f));
-    CHECK_THAT(a.Z(), WithinRel(3.0f));
-    CHECK_THAT(a.W(), WithinRel(4.0f));
+    CHECK_THAT(a.x, WithinRel(1.0f));
+    CHECK_THAT(a.y, WithinRel(2.0f));
+    CHECK_THAT(a.z, WithinRel(3.0f));
+    CHECK_THAT(a.w, WithinRel(4.0f));
 }
 
 TEST_CASE("Comparators") {

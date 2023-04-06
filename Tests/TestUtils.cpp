@@ -7,7 +7,7 @@
 #include <sstream>
 
 std::ostream &operator<<(std::ostream &os, const Vec4 &v) {
-    return os << "{" << v.X() << ", " << v.Y() << ", " << v.Z() << ", " << v.W() << "}";
+    return os << "{" << v.x << ", " << v.y << ", " << v.z << ", " << v.w << "}";
 }
 
 std::ostream &operator<<(std::ostream &os, const Mat4 &m) {
@@ -17,18 +17,19 @@ std::ostream &operator<<(std::ostream &os, const Mat4 &m) {
               << m.c2 << ",\n"
               << m.c3 << "\n}";
 }
+
 std::ostream &operator<<(std::ostream &os, const Quat &v) {
-    return os << "{" << v.X() << ", " << v.Y() << ", " << v.Z() << ", " << v.W() << "}";
+    return os << "{" << v.x << ", " << v.y << ", " << v.z << ", " << v.w << "}";
 }
 
 EqualsVec4::EqualsVec4(const Vec4 &vec, float epsilon)
     : vec{vec}, epsilon{epsilon} {}
 
 bool EqualsVec4::match(const Vec4 &other) const {
-    return WithinAbs(vec.X(), epsilon).match(other.X()) &&
-           WithinAbs(vec.Y(), epsilon).match(other.Y()) &&
-           WithinAbs(vec.Z(), epsilon).match(other.Z()) &&
-           WithinAbs(vec.W(), epsilon).match(other.W());
+    return WithinAbs(vec.x, epsilon).match(other.x) &&
+           WithinAbs(vec.y, epsilon).match(other.y) &&
+           WithinAbs(vec.z, epsilon).match(other.z) &&
+           WithinAbs(vec.w, epsilon).match(other.w);
 }
 
 std::string EqualsVec4::describe() const {
@@ -38,20 +39,20 @@ std::string EqualsVec4::describe() const {
 }
 
 bool EqualsVec4::match(const glm::vec4 &other) const {
-    return WithinAbs(vec.X(), epsilon).match(other.x) &&
-           WithinAbs(vec.Y(), epsilon).match(other.y) &&
-           WithinAbs(vec.Z(), epsilon).match(other.z) &&
-           WithinAbs(vec.W(), epsilon).match(other.w);
+    return WithinAbs(vec.x, epsilon).match(other.x) &&
+           WithinAbs(vec.y, epsilon).match(other.y) &&
+           WithinAbs(vec.z, epsilon).match(other.z) &&
+           WithinAbs(vec.w, epsilon).match(other.w);
 }
 
 DoesNotEqualVec4::DoesNotEqualVec4(const Vec4 &vec, float epsilon)
     : vec{vec}, epsilon{epsilon} {}
 
 bool DoesNotEqualVec4::match(const Vec4 &other) const {
-    return !WithinAbs(vec.X(), epsilon).match(other.X()) ||
-           !WithinAbs(vec.Y(), epsilon).match(other.Y()) ||
-           !WithinAbs(vec.Z(), epsilon).match(other.Z()) ||
-           !WithinAbs(vec.W(), epsilon).match(other.W());
+    return !WithinAbs(vec.x, epsilon).match(other.x) ||
+           !WithinAbs(vec.y, epsilon).match(other.y) ||
+           !WithinAbs(vec.z, epsilon).match(other.z) ||
+           !WithinAbs(vec.w, epsilon).match(other.w);
 }
 
 std::string DoesNotEqualVec4::describe() const {
@@ -99,10 +100,10 @@ EqualsQuat::EqualsQuat(const Quat &quat, float epsilon)
     : quat{quat}, epsilon{epsilon} {}
 
 bool EqualsQuat::match(const Quat &other) const {
-    return WithinAbs(quat.X(), epsilon).match(other.X()) &&
-           WithinAbs(quat.Y(), epsilon).match(other.Y()) &&
-           WithinAbs(quat.Z(), epsilon).match(other.Z()) &&
-           WithinAbs(quat.W(), epsilon).match(other.W());
+    return WithinAbs(quat.x, epsilon).match(other.x) &&
+           WithinAbs(quat.y, epsilon).match(other.y) &&
+           WithinAbs(quat.z, epsilon).match(other.z) &&
+           WithinAbs(quat.w, epsilon).match(other.w);
 }
 
 std::string EqualsQuat::describe() const {
