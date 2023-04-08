@@ -1,5 +1,5 @@
 //
-// Created by andyroiiid on 3/14/2023.
+// Created by Andrew Huang on 3/14/2023.
 //
 
 #pragma once
@@ -13,8 +13,6 @@ union Mat4;
 // y: data[63:32], m128_f32[1]
 // z: data[95:64], m128_f32[2]
 // w: data[127:96], m128_f32[3]
-//
-// Requires SSE4.1
 union alignas(16) Vec4 {
     // Constructors
 
