@@ -54,6 +54,7 @@ union alignas(16) Quat {
                 w * q.w - x * q.x - y * q.y - z * q.z};
     }
 
+    // Right handed!!!
     [[nodiscard]] Mat4 ToMat4() const {
         const float x2 = x * x;
         const float y2 = y * y;
@@ -64,9 +65,9 @@ union alignas(16) Quat {
         const float wx = w * x;
         const float wy = w * y;
         const float wz = w * z;
-        return {1 - 2 * y2 - 2 * z2, 2 * xy - 2 * wz, 2 * xz + 2 * wy, 0,
-                2 * xy + 2 * wz, 1 - 2 * x2 - 2 * z2, 2 * yz - 2 * wx, 0,
-                2 * xz - 2 * wy, 2 * yz + 2 * wx, 1 - 2 * x2 - 2 * y2, 0,
+        return {1 - 2 * y2 - 2 * z2, 2 * xy + 2 * wz, 2 * xz - 2 * wy, 0,
+                2 * xy - 2 * wz, 1 - 2 * x2 - 2 * z2, 2 * yz + 2 * wx, 0,
+                2 * xz + 2 * wy, 2 * yz - 2 * wx, 1 - 2 * x2 - 2 * y2, 0,
                 0, 0, 0, 1};
     }
 
